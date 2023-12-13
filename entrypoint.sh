@@ -10,4 +10,4 @@ python manage.py collectstatic --noinput
 
 # Start server
 echo "Starting server..."
-daphne -p 8000 DuoTasker.asgi:application
+uvicorn DuoTasker.asgi:application --host 0.0.0.0 --port 8000
