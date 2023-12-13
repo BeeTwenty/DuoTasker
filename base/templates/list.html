@@ -64,7 +64,7 @@
                 </div>
                 <div class="media-right">
                     <a href="javascript:void(0);" id="complete-button-{{ task.id }}" class="button is-success" onclick="completeTask('{{ task.id }}');">
-                        <i class="fas fa-check"></i> Complete
+                        <i class="fas fa-check"></i>
                     </a>
                     
                 </div>
@@ -116,7 +116,7 @@ taskSocket.onclose = function(e) {
         // Add strikethrough and change button immediately
         document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
         let completeButton = document.getElementById('complete-button-' + taskId);
-        completeButton.innerHTML = '<i class="fas fa-undo"></i> Undo';
+        completeButton.innerHTML = '<i class="fas fa-undo"></i>';
         completeButton.classList.replace('is-success', 'is-warning');
         completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
 
@@ -133,7 +133,7 @@ taskSocket.onclose = function(e) {
         // Remove strikethrough and change button back
         document.getElementById('task-title-' + taskId).classList.remove('has-text-grey-light', 'is-striked');
         let completeButton = document.getElementById('complete-button-' + taskId);
-        completeButton.innerHTML = '<i class="fas fa-check"></i> Complete';
+        completeButton.innerHTML = '<i class="fas fa-check"></i>';
         completeButton.classList.replace('is-warning', 'is-success');
         completeButton.setAttribute('onclick', `completeTask(${taskId}); return false;`);
     }
