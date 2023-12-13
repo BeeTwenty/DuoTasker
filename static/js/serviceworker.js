@@ -1,5 +1,5 @@
 // Cache name
-var CACHE_NAME = 'duotasker-cache-v1';
+var CACHE_NAME = 'duotasker-cache-v2';
 
 // Files you want to cache
 var urlsToCache = [
