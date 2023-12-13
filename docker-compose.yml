@@ -20,7 +20,7 @@ services:
     environment:
       - SERVER_NAME=${SERVER_NAME}
     depends_on:
-      - web
+      - DuoTasker
     networks:
       - app-network
 
