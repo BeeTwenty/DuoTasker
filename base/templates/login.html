@@ -3,14 +3,8 @@
 {% block content %}
 <div class="section">
     <div class="container">
-        <!-- Mobile app header -->
-        <div class="mobile-header">
-            <div class="back-button" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
-            <div>Login</div>
-        </div>
-
         <div class="columns is-centered">
-            <div class="column is-8-mobile is-5-tablet is-4-desktop is-3-widescreen">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
                 <form action="{% url 'login' %}" method="post" class="box">
                     {% csrf_token %}
                     <div class="field">
@@ -44,35 +38,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    /* Go back function */
-    function goBack() {
-        window.history.back();
-    }
-</script>
-
-<style>
-    /* Add mobile-specific styles here */
-    @media screen and (max-width: 768px) {
-        /* Adjust styles for mobile screens */
-        /* ... */
-
-        /* Mobile app header style */
-        .mobile-header {
-            background-color: #007BFF;
-            color: #fff;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .back-button {
-            font-size: 24px;
-            cursor: pointer;
-        }
-    }
-</style>
-
 {% endblock %}

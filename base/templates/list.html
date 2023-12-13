@@ -3,88 +3,61 @@
 {% block content %}
 
 <style>
-  /* Add mobile-specific styles here */
-  @media screen and (max-width: 768px) {
-    /* Adjust styles for mobile screens */
-    /* ... */
 
-    /* Mobile app header style */
-    .mobile-header {
-      background-color: #007BFF;
-      color: #fff;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
 
-    .menu-icon {
-      font-size: 24px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-  }
+.fade-out {
+    animation-name: fadeOut;
+    animation-duration: 1s; /* or however long you want the fade out to take */
+    animation-fill-mode: forwards; /* this ensures the element stays hidden after animation */
+}
+
+
 </style>
 
 <div class="container">
-  <div class="section">
-    <!-- Mobile app header -->
-    <div class="mobile-header">
-      <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
-      <div>Task List</div>
-      <div><i class="fas fa-plus"></i></div>
-    </div>
-
-    <!-- Menu (hidden by default) -->
-    <div class="mobile-menu" id="mobile-menu">
-      <ul>
-        <li><a href="#">Add Task</a></li>
-        <li><a href="#">Settings</a></li>
-        <li><a href="#">Logout</a></li>
-      </ul>
-    </div>
-
-    <div class="box">
-      <form method="post" action="{% url 'create_task' %}">
-        {% csrf_token %}
-        <div class="field has-addons">
-          <div class="control is-expanded">
-            <input class="input" type="text" name="title" placeholder="Add new task">
-          </div>
-          <div class="control">
-            <button type="submit" class="button is-primary"><i class="fas fa-plus"></i></button>
-          </div>
+    <div class="section">
+        <div class="box">
+            <form method="post" action="{% url 'create_task' %}">
+                {% csrf_token %}
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="title" placeholder="Add new task">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </form>
         </div>
-      </form>
-    </div>
 
-    {% for task in tasks %}
-    <div class="box" id="task-{{ task.id }}">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <h3 id="task-title-{{ task.id }}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
-              <strong>{{ task.title }}</strong>
-            </h3>
-          </div>
+        {% for task in tasks %}
+        <div class="box" id="task-{{ task.id }}">
+            <article class="media">
+                <div class="media-content">
+                    <div class="content">
+                        <h3 id="task-title-{{ task.id }}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
+                            <strong>{{ task.title }}</strong>
+                        </h3>
+                    </div>
+                </div>
+                <div class="media-right">
+                    <a href="javascript:void(0);" id="complete-button-{{ task.id }}" class="button is-success" onclick="completeTask('{{ task.id }}');">
+                        <i class="fas fa-check"></i> Complete
+                    </a>
+                    
+                </div>
+            </article>
         </div>
-        <div class="media-right">
-          <a href="javascript:void(0);" id="complete-button-{{ task.id }}" class="button is-success" onclick="completeTask('{{ task.id }}');">
-            <i class="fas fa-check"></i> Complete
-          </a>
-        </div>
-      </article>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
 </div>
 
 <script>
-/* Toggle mobile menu visibility */
-function toggleMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileMenu.classList.toggle('show-menu');
-  }
+
 
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
