@@ -3,7 +3,7 @@ var CACHE_NAME = 'duotasker-cache-v1';
 
 // Files you want to cache
 var urlsToCache = [
-  '/',
+  '/static/',
   '/static/css/bulma.css'
 ];
 
