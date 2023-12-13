@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 class TaskListConsumer(AsyncWebsocketConsumer):
+    print("TaskListConsumer")
     async def connect(self):
         await self.channel_layer.group_add("task_list", self.channel_name)
         await self.accept()
