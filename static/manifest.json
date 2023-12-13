@@ -27,19 +27,21 @@
 
   "screenshots": [
   {
-    "src": "/static/images/screenshots/skjermbilde1.png",
+    "src": "/static/images/screenshots/Skjermbilde1.png",
     "type": "image/png",
     "sizes": "1033x1513"
   },
   {
-    "src": "/static/images/screenshots/skjermbilde2.png",
+    "src": "/static/images/screenshots/Skjermbilde2.png",
     "type": "image/png",
-    "sizes": "1901x924"
+    "sizes": "1901x924",
+    "form_facor": "wide"
   },
   {
     "src": "/static/images/screenshots/Screenshot_20231213_200248_Chrome.jpg",
     "type": "image/jpg",
-    "sizes": "2822x1357"
+    "sizes": "2822x1357",
+    "form_facor": "wide"
   },
   {
     "src": "/static/images/screenshots/Screenshot_20231213_194307_Chrome.jpg",
