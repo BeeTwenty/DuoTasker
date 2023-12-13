@@ -8,11 +8,6 @@
       "type": "image/png"
     },
     {
-      "src": "/static/images/icons/icon-256x256.png",
-      "sizes": "256x256",
-      "type": "image/png"
-    },
-    {
       "src": "/static/images/icons/icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png"
@@ -34,8 +29,7 @@
   {
     "src": "/static/images/screenshots/Skjermbilde2.png",
     "type": "image/png",
-    "sizes": "1901x924",
-    "form_factor": "wide"
+    "sizes": "1901x924"
   },
   {
     "src": "/static/images/screenshots/Screenshot_20231213_200248_Chrome.jpg",
