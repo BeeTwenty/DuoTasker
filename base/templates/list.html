@@ -64,7 +64,24 @@ const taskSocket = new WebSocket(
 
 taskSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    // Update your task list here
+    console.log("WebSocket message received:", data);
+
+    // Example: Update the task list based on the action
+    if (data.action === 'created') {
+        // Add the new task to the task list
+    } else if (data.action === 'completed') {
+        // Mark the task as completed
+        document.getElementById('task-title-' + data.task_id).classList.add('has-text-grey-light', 'is-striked');
+    } else if (data.action === 'undone') {
+        // Undo the completion of the task
+        document.getElementById('task-title-' + data.task_id).classList.remove('has-text-grey-light', 'is-striked');
+    } else if (data.action === 'deleted') {
+        // Remove the task from the task list
+        const taskElement = document.getElementById('task-' + data.task_id);
+        if (taskElement) {
+            taskElement.remove();
+        }
+    }
 };
 
 taskSocket.onclose = function(e) {
