@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-out {
+    animation-name: fadeOut;
+    animation-duration: 1s; /* or however long you want the fade out to take */
+    animation-fill-mode: forwards; /* this ensures the element stays hidden after animation */
+}
+
+
+</style>
+
+<div class="container">
+    <div class="section">
+        <div class="box">
+            <form method="post" action="{% url 'create_task' %}">
+                {% csrf_token %}
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="title" placeholder="Add new task">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {% for task in tasks %}
+        <div class="box" id="task-{{ task.id }}">
+            <article class="media">
+                <div class="media-content">
+                    <div class="content">
+                        <h3 id="task-title-{{ task.id }}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
+                            <strong>{{ task.title }}</strong>
+                        </h3>
+                    </div>
+                </div>
+                <div class="media-right">
+                    <a href="javascript:void(0);" id="complete-button-{{ task.id }}" class="button is-success" onclick="completeTask('{{ task.id }}');">
+                        <i class="fas fa-check"></i> Complete
+                    </a>
+                    
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+
+    var taskTimeouts = {};
+    function completeTask(taskId) {
+        // Add strikethrough and change button immediately
+        document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
+        let completeButton = document.getElementById('complete-button-' + taskId);
+        completeButton.innerHTML = '<i class="fas fa-undo"></i> Undo';
+        completeButton.classList.replace('is-success', 'is-warning');
+        completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
+
+        // Start 15 seconds timer to delete the task
+        taskTimeouts[taskId] = setTimeout(function() {
+        deleteTask(taskId);
+    }, 15000);
+}
+
+    function undoCompleteTask(taskId) {
+
+        clearTimeout(taskTimeouts[taskId]);
+        delete taskTimeouts[taskId];
+        // Remove strikethrough and change button back
+        document.getElementById('task-title-' + taskId).classList.remove('has-text-grey-light', 'is-striked');
+        let completeButton = document.getElementById('complete-button-' + taskId);
+        completeButton.innerHTML = '<i class="fas fa-check"></i> Complete';
+        completeButton.classList.replace('is-warning', 'is-success');
+        completeButton.setAttribute('onclick', `completeTask(${taskId}); return false;`);
+    }
+
+    function deleteTask(taskId) {
+    fetch(`/delete_task/${taskId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            var taskElement = document.getElementById('task-' + taskId);
+            taskElement.classList.add('fade-out');
+            taskElement.addEventListener('animationend', function() {
+                taskElement.remove();
+            });
+        }
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+}
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<style>
+    .is-striked {
+        text-decoration: line-through;
+    }
+</style>
+
+{% endblock %}
