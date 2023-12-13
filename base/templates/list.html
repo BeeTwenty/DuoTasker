@@ -34,6 +34,7 @@
             </form>
         </div>
 
+        <div id="task-list">
         {% for task in tasks %}
         <div class="box" id="task-{{ task.id }}">
             <article class="media">
@@ -53,6 +54,7 @@
             </article>
         </div>
         {% endfor %}
+    </div>
     </div>
 </div>
 
