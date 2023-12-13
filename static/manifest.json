@@ -22,7 +22,33 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+    
   ],
+
+  "screenshots": [
+  {
+    "src": "/static/images/screenhosts/skjermbilde1.png",
+    "type": "image/jpg",
+    "sizes": "800x600"
+  },
+  {
+    "src": "/static/images/screenhosts/skjermbilde2.png",
+    "type": "image/jpg",
+    "sizes": "1200x900"
+  }
+  {
+    "src": "/static/images/screenhosts/Screenshot_20231213_200248_Chrome.jpg",
+    "type": "image/jpg",
+    "sizes": "800x600"
+  },
+  {
+    "src": "/static/images/screenhosts/Screenshot_20231213_194307_Chrome.jpg",
+    "type": "image/jpg",
+    "sizes": "1200x900"
+  }
+  
+],
+
   "start_url": "/",
   "background_color": "#FFFFFF",
   "display": "standalone",
