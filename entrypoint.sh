@@ -10,4 +10,4 @@ python manage.py collectstatic --noinput
 
 # Start server
 echo "Starting server..."
-python manage.py runserver 0.0.0.0:8000
+daphne -p 8000 DuoTasker.asgi:application
