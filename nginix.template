@@ -16,7 +16,7 @@ http {
         server_name ${SERVER_NAME}; # This will be replaced by the environment variable
 
         location / {
-            proxy_pass http://web:8000;
+            proxy_pass http://duotasker:8000;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "upgrade";
