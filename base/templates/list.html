@@ -58,6 +58,21 @@
 
 <script>
 
+const taskSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/tasks/'
+);
+
+taskSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    // Update your task list here
+};
+
+taskSocket.onclose = function(e) {
+    console.error('Task socket closed unexpectedly');
+};
+
+
+
     var taskTimeouts = {};
     function completeTask(taskId) {
         // Add strikethrough and change button immediately
