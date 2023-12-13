@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_simple_bulma',
     'base',
     'channels',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,14 @@ LOGIN_URL = 'login'
 
 ASGI_APPLICATION = 'DuoTasker.asgi.application'
 CSRF_TRUSTED_ORIGINS= [os.getenv('CSRF_TRUSTED_ORIGINS')]
+
+
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
+PWA_APP_NAME = 'DuoTasker'
+PWA_APP_DESCRIPTION = "DuoTasker - Task Management"
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/icon.png',
+        'sizes': '160x160'
+    }
+]

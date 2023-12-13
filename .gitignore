@@ -28,7 +28,7 @@ node_modules/
 bower_components/
 
 # Build artifacts
-static/
+
 dist/
 build/
 
