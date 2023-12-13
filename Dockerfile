@@ -13,7 +13,7 @@ COPY requirements.txt /app/
 
 RUN python -m venv venv
 
-RUN source venv/Scripts/activate
+RUN source venv/bin/activate
 
 RUN pip install --no-cache-dir -r requirements.txt
 
