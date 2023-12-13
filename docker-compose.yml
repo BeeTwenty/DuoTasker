@@ -1,6 +1,6 @@
 version: '3'
 services:
-  DuoTasker:
+  duotasker:
     build: .
     volumes:
       - .:/app
@@ -20,7 +20,7 @@ services:
     environment:
       - SERVER_NAME=${SERVER_NAME}
     depends_on:
-      - DuoTasker
+      - duotasker
     networks:
       - app-network
 
