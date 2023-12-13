@@ -28,12 +28,12 @@
   "screenshots": [
   {
     "src": "/static/images/screenshots/skjermbilde1.png",
-    "type": "image/jpg",
+    "type": "image/png",
     "sizes": "1033x1513"
   },
   {
     "src": "/static/images/screenshots/skjermbilde2.png",
-    "type": "image/jpg",
+    "type": "image/png",
     "sizes": "1901x924"
   },
   {
