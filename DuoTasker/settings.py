@@ -153,3 +153,4 @@ LOGIN_URL = 'login'
 
 
 ASGI_APPLICATION = 'DuoTasker.asgi.application'
+CSRF_TRUSTED_ORIGINS= os.getenv('CSRF_TRUSTED_ORIGINS')
