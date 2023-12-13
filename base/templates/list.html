@@ -74,18 +74,23 @@ taskSocket.onmessage = function(e) {
         const newTaskElement = document.createElement('div');
         newTaskElement.className = 'box';
         newTaskElement.id = 'task-' + data.task_id;
-        
-        // Check if data.title exists before using it
+
+        // Include the title and button code even if data.title is undefined
         const title = data.title ? `<strong>${data.title}</strong>` : '';
         
         newTaskElement.innerHTML = `
             <article class="media">
                 <div class="media-content">
                     <div class="content">
-                        <h3 id="task-title-${data.task_id}" class="has-text-grey-light is-striked">
+                        <h3 id="task-title-${data.task_id}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
                             ${title}
                         </h3>
                     </div>
+                </div>
+                <div class="media-right">
+                    <a href="javascript:void(0);" id="complete-button-${data.task_id}" class="button is-success" onclick="completeTask('${data.task_id}');">
+                        <i class="fas fa-check"></i> Complete
+                    </a>
                 </div>
             </article>
         `;
@@ -108,6 +113,7 @@ taskSocket.onmessage = function(e) {
 taskSocket.onclose = function(e) {
     console.error('Task socket closed unexpectedly');
 };
+
 
 
 
