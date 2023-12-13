@@ -71,7 +71,7 @@ Contributions to DuoTasker are welcome. Please follow the standard procedures fo
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE.md).
+This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
