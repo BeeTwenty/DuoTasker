@@ -57,9 +57,9 @@
 </div>
 
 <script>
-
+const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const taskSocket = new WebSocket(
-    'ws://' + window.location.host + '/ws/tasks/'
+    wsScheme + window.location.host + '/ws/tasks/'
 );
 
 taskSocket.onmessage = function(e) {
