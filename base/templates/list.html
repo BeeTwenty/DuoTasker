@@ -76,10 +76,15 @@ taskSocket.onmessage = function(e) {
             <article class="media">
                 <div class="media-content">
                     <div class="content">
-                        <h3 id="task-title-${data.task_id}">
+                        <h3 id="task-title-${data.task_id}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
                             <strong>${data.title}</strong>
                         </h3>
                     </div>
+                </div>
+                <div class="media-right">
+                    <a href="javascript:void(0);" id="complete-button-${data.task_id}" class="button is-success" onclick="completeTask('${data.task_id}');">
+                        <i class="fas fa-check"></i> Complete
+                    </a>
                 </div>
             </article>
         `;
