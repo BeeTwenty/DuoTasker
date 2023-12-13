@@ -34,7 +34,6 @@
             </form>
         </div>
 
-        <div id="task-list">
         {% for task in tasks %}
         <div class="box" id="task-{{ task.id }}">
             <article class="media">
@@ -55,7 +54,6 @@
         </div>
         {% endfor %}
     </div>
-    </div>
 </div>
 
 <script>
@@ -68,32 +66,9 @@ taskSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     console.log("WebSocket message received:", data);
 
+    // Example: Update the task list based on the action
     if (data.action === 'created') {
         // Add the new task to the task list
-        const taskList = document.getElementById('task-list'); // Replace 'task-list' with the ID of your task list container
-        const newTaskElement = document.createElement('div');
-        newTaskElement.className = 'box';
-        newTaskElement.id = 'task-' + data.task_id;
-
-        // Include the title and button code even if data.title is undefined
-        const title = data.title !== undefined ? data.title : ''; // Ensure title is not undefined
-        newTaskElement.innerHTML = `
-            <article class="media">
-                <div class="media-content">
-                    <div class="content">
-                        <h3 id="task-title-${data.task_id}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
-                            <strong>${title}</strong>
-                        </h3>
-                    </div>
-                </div>
-                <div class="media-right">
-                    <a href="javascript:void(0);" id="complete-button-${data.task_id}" class="button is-success" onclick="completeTask('${data.task_id}');">
-                        <i class="fas fa-check"></i> Complete
-                    </a>
-                </div>
-            </article>
-        `;
-        taskList.appendChild(newTaskElement);
     } else if (data.action === 'completed') {
         // Mark the task as completed
         document.getElementById('task-title-' + data.task_id).classList.add('has-text-grey-light', 'is-striked');
@@ -112,8 +87,6 @@ taskSocket.onmessage = function(e) {
 taskSocket.onclose = function(e) {
     console.error('Task socket closed unexpectedly');
 };
-
-
 
 
 
