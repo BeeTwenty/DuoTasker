@@ -1,9 +1,9 @@
-version: '3'
 services:
   duotasker:
     build: .
     volumes:
       - .:/app
+      - static_volume:/app/staticfiles
     depends_on:
       - redis
     networks:
@@ -12,11 +12,12 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
+      - "8887:80"
       - "8888:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./nginx.template:/etc/nginx/templates/default.conf.template
+      - static_volume:/app/staticfiles
     environment:
       - SERVER_NAME=${SERVER_NAME}
     depends_on:
@@ -24,10 +25,8 @@ services:
     networks:
       - app-network
 
-  redis:
-    image: "redis:alpine"
-    networks:
-      - app-network
+volumes:
+  static_volume:
 
 networks:
   app-network:
