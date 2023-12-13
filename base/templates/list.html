@@ -76,8 +76,7 @@ taskSocket.onmessage = function(e) {
         newTaskElement.id = 'task-' + data.task_id;
 
         // Include the title and button code even if data.title is undefined
-        const title = data.title || ''; // Ensure title is not undefined
-
+        const title = data.title !== undefined ? data.title : ''; // Ensure title is not undefined
         newTaskElement.innerHTML = `
             <article class="media">
                 <div class="media-content">
