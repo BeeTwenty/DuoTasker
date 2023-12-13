@@ -25,6 +25,12 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: "redis:alpine"
+    networks:
+      - app-network
+
+
 volumes:
   static_volume:
 
