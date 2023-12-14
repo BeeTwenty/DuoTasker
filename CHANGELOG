@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [V1.0.1]
+
+
+ -   Fixed some static files not loading
+ -   Fixed docker compse file
+
+
 ## [Released]
 
 - Initial release
