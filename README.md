@@ -1,3 +1,4 @@
+<div align="center">
 # DuoTasker
 
   
@@ -12,14 +13,14 @@ Set up and run DuoTasker on your local machine or production environment using D
 
 ### Prerequisites
 
-- Docker Compose
+ Docker Compose
 
 ### Installation and Usage
 
 #### Using Docker Compose
 
-1. **Set Up Environment Variables:**
-   - Create a .env file with necessary configurations:
+ **Set Up Environment Variables:**
+    Create a .env file with necessary configurations:
   
      
    ```env
@@ -32,7 +33,7 @@ Set up and run DuoTasker on your local machine or production environment using D
     ```
      
 
-2. **Create a Docker Compose File:**
+ **Create a Docker Compose File:**
 ```yml
 services:
   duotasker:
@@ -76,7 +77,7 @@ networks:
 
 ```
 
-3. **Run with Docker Compose:**
+ **Run with Docker Compose:**
 
 ```
 docker compose up -d
@@ -85,16 +86,16 @@ docker compose up -d
 
 ### Accessing the Application
 
-- **Localhost:** http://localhost:80
-- **Production:** Replace localhost with your domain.
+ **Localhost:** http://localhost:80
+ **Production:** Replace localhost with your domain.
 
 ## Features
 
-- Task management, responsive design, PWA capabilities.
+ Task management, responsive design, PWA capabilities.
 
 ## Configuring Nginx
 
-- Modify nginx.conf for custom domain settings.
+ Modify nginx.conf for custom domain settings.
 
 
 ## Create Super User
@@ -113,6 +114,4 @@ Contributions are welcome. Follow standard open-source contribution guidelines.
 
 Licensed under the MIT License.
 
-## Acknowledgments
-
-- Django Community and package maintainers.
+</div>
