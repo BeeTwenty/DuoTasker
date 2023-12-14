@@ -3,7 +3,7 @@ services:
     build: .
     volumes:
       - .:/app
-      - static_volume:/app/staticfiles
+      - ./static:/app/staticfiles
     depends_on:
       - redis
     networks:
@@ -17,7 +17,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./nginx.template:/etc/nginx/templates/default.conf.template
-      - static_volume:/app/staticfiles
+      - ./static:/app/staticfiles
     environment:
       - SERVER_NAME=${SERVER_NAME}
     depends_on:
