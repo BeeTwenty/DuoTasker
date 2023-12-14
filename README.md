@@ -1,79 +1,121 @@
 # DuoTasker
 
-DuoTasker is a Django-based web application designed for efficient task management. It leverages Django's robust framework capabilities, along with Nginx for web serving and Redis for enhanced performance.
+DuoTasker is a Django-based web application designed for efficient task management, utilizing Django, Nginx, and Redis.
 
 ## Getting Started
 
-These instructions will guide you through setting up and running DuoTasker on your local machine or production environment.
+Set up and run DuoTasker on your local machine or production environment using Docker.
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
 - Docker
-- Docker Compose
+- Docker Compose (optional, for Docker Compose method)
 
-### Installation
+### Installation and Usage
 
-1. **Clone the Repository:**
+#### Using Docker Run
+
+1. **Set Up Environment Variables:**
+   - Create a .env file with necessary configurations:
+  
+     
+   ```env
+    SECRET_KEY=your_secret_key
+    DEBUG=False
+    ALLOWED_HOSTS=your_domain.com or ip
+    CSRF_TRUSTED_ORIGINS=http(s)://your_domain.com or ip
+    TIME_ZONE=Your_Time_Zone
+    SERVER_NAME=your_domain.com or ip
+    ```
+     
+2. **Run the Docker Image:**
+   ```shell
+   docker run -p 8887:80 -p 8888:443 --env-file .env beetwenty/duotasker:latest
+
+   ```
+
+#### Using Docker Compose
+
+1. **Create a Docker Compose File:**
+```yml
+services:
+  duotasker:
+    image: beetwenty/duotasker:latest
+    volumes:
+      - .:/app
+      - ./static:app/staticfiles/
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.template:/etc/nginx/templates/default.conf.template
+      - ./static:/app/staticfiles
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
+    depends_on:
+      - duotasker
+    networks:
+      - app-network
+
+  redis:
+    image: "redis:alpine"
+    networks:
+      - app-network
+
+volumes:
+  static_volume:
+
+networks:
+  app-network:
+    driver: bridge
+
 ```
-git clone https://github.com/BeeTwenty/DuoTasker.git
-cd DuoTasker
+
+3. **Run with Docker Compose:**
+
+```
+docker compose up -d
+```
+   
+
+### Accessing the Application
+
+- **Localhost:** http://localhost:80
+- **Production:** Replace localhost with your domain.
+
+## Features
+
+- Task management, responsive design, PWA capabilities.
+
+## Configuring Nginx
+
+- Modify nginx.conf for custom domain settings.
+
+
+## Create Super User
+
+```
+docker-compose exec -it duotasker python manage.py createsuperuser
+
 ```
 
-2. **Set Up Environment Variables:**
-- Copy the `.env.example` file to a new file named `.env`.
-- Edit the `.env` file to include your specific settings:
-  ```
-  SECRET_KEY=your_secret_key
-  DEBUG=False
-  ALLOWED_HOSTS=your_domain.com
-  CSRF_TRUSTED_ORIGINS=your_domain.com
-  TIME_ZONE=Your_Time_Zone
-  SERVER_NAME=your_domain.com
-  ```
-- Ensure `SECRET_KEY` is strong and unique.
-- Set `DEBUG` to `False` in a production environment.
-
-3. **Build and Run with Docker Compose:**
-```
-docker-compose up --build -d
-```
-
-### Usage
-
-Once the application is running, access it via:
-- **Localhost:** [http://localhost:8887](http://localhost:8887) (or the port you configured)
-- **Production:** `http://your_domain.com` (replace with your actual domain)
-
-### Features
-
-- Task management functionalities.
-- Responsive design for various devices.
-- Progressive Web App (PWA) capabilities.
-
-### Configuring Nginx
-
-- The `nginx.conf` file is pre-configured for basic usage.
-- For custom domain settings, modify the `server_name` directive in `nginx.conf`.
-
-### Static Files
-
-- Static files are managed by Django and served by Nginx.
-- Run `docker-compose exec duotasker python manage.py collectstatic` to collect static files.
-
-### Create Super User
-
-- Run `docker-compose exec duotasker python manage.py createsuperuser` and fill inn the fields.
 
 ## Contributing
 
-Contributions to DuoTasker are welcome. Please follow the standard procedures for contributing to open-source projects.
+Contributions are welcome. Follow standard open-source contribution guidelines.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Licensed under the MIT License.
 
 ## Acknowledgments
 
-- Django Community
-- Contributors and maintainers of the used packages.
+- Django Community and package maintainers.
