@@ -32,6 +32,7 @@ Set up and run DuoTasker on your local machine or production environment using D
 ```yml
 services:
   duotasker:
+    container_name: duotasker
     image: beetwenty/duotasker:latest
     volumes:
       - /path/to/static/:/app/staticfiles/
@@ -42,6 +43,7 @@ services:
 
   nginx:
     image: nginx:alpine
+    container_name: duotasker-web
     ports:
       - "80:80"
       - "443:443"
@@ -57,6 +59,7 @@ services:
 
   redis:
     image: "redis:alpine"
+    container_name: duotasker-redis
     networks:
       - app-network
 
