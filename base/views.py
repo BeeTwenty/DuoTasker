@@ -22,7 +22,7 @@ def index(request):
     tasks = Task.objects.all()
     return render(request, 'list.html', {'tasks': tasks})
 
-def send_task_update(task_id, action):
+def send_task_update(task_id, action, task_title):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         "task_list",  # The name of your group/channel
@@ -30,6 +30,7 @@ def send_task_update(task_id, action):
             "type": "task.update",  # Custom method in your consumer
             "task_id": task_id,
             "action": action,  # 'created', 'completed', 'undone', 'deleted'
+            "title": task_title,
         },
     )
 
@@ -39,7 +40,7 @@ def create_task(request):
         title = request.POST.get('title')
         task = Task(title=title)
         task.save()
-        send_task_update(task.id, 'created')
+        send_task_update(task.id, 'created', task.title)
         return redirect('list')
     return render(request, 'list')
 

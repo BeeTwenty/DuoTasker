@@ -13,16 +13,25 @@ class TaskListConsumer(AsyncWebsocketConsumer):
         # Send the message to WebSocket
         await self.send(text_data=json.dumps({
             "task_id": event["task_id"],
-            "action": event["action"]
+            "action": event["action"],
+            "title": event["title"],
 
     
+        }))
+
+    async def task_deleted(self, event):
+        # Handle the 'deleted' action here and update the UI
+        await self.send(text_data=json.dumps({
+            "task_id": event["task_id"],
+            "action": event["action"]
         }))
 
     async def task_created(self, event):
         # Handle the 'created' action here and update the UI
         await self.send(text_data=json.dumps({
             "task_id": event["task_id"],
-            "action": event["action"]
+            "action": event["action"],
+            "title": event["title"],
         }))
 
     

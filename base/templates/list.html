@@ -88,8 +88,29 @@ taskSocket.onmessage = function(e) {
     console.log("WebSocket message received:", data);
 
     // Example: Update the task list based on the action
+    
     if (data.action === 'created') {
-        // Add the new task to the task list
+    // Create a new task element and add it to the task list
+    const newTaskElement = document.createElement('div');
+    newTaskElement.id = 'task-' + data.task_id;
+    newTaskElement.innerHTML = `
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="content">
+                        <h3 id="task-title-${data.task_id}" class="">
+                            <strong>${data.title}</strong> 
+                        </h3>
+                    </div>
+                </div>
+                <div class="media-right">
+                    <a href="javascript:void(0);" id="complete-button-${data.task_id}" class="button is-success" onclick="completeTask('${data.task_id}');">
+                        <i class="fas fa-check"></i>
+                    </a>
+                </div>
+            </article>
+        </div>`;
+    document.querySelector('.section').appendChild(newTaskElement);
     } else if (data.action === 'completed') {
         // Mark the task as completed
         document.getElementById('task-title-' + data.task_id).classList.add('has-text-grey-light', 'is-striked');
