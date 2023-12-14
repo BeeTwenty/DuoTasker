@@ -23,67 +23,74 @@ Set up and run DuoTasker on your local machine or production environment using D
  **Set Up Environment Variables:**
     Create a .env file with necessary configurations:
   
+  </div>
+  
+  ```env
+      SECRET_KEY=your_secret_key
+      DEBUG=False
+      ALLOWED_HOSTS=your_domain.com or ip
+      CSRF_TRUSTED_ORIGINS=http(s)://your_domain.com or ip
+      TIME_ZONE=Your_Time_Zone
+      SERVER_NAME=your_domain.com or ip
+  ```
      
-   ```env
-    SECRET_KEY=your_secret_key
-    DEBUG=False
-    ALLOWED_HOSTS=your_domain.com or ip
-    CSRF_TRUSTED_ORIGINS=http(s)://your_domain.com or ip
-    TIME_ZONE=Your_Time_Zone
-    SERVER_NAME=your_domain.com or ip
-    ```
-     
 
- **Create a Docker Compose File:**
-```yml
-services:
-  duotasker:
-    container_name: duotasker
-    image: beetwenty/duotasker:latest
-    volumes:
-      - /path/to/static/:/app/staticfiles/
-    depends_on:
-      - redis
-    networks:
-      - app-network
+   **Create a Docker Compose File:**
+   
+  ```yml
+  services:
+    duotasker:
+      container_name: duotasker
+      image: beetwenty/duotasker:latest
+      volumes:
+        - /path/to/static/:/app/staticfiles/
+      depends_on:
+        - redis
+      networks:
+        - app-network
+  
+    nginx:
+      image: nginx:alpine
+      container_name: duotasker-web
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - /path/to/nginx.conf:/etc/nginx/nginx.conf
+        - /path/to/static:/app/staticfiles/
+      environment:
+        - SERVER_NAME=${SERVER_NAME}
+      depends_on:
+        - duotasker
+      networks:
+        - app-network
+  
+    redis:
+      image: "redis:alpine"
+      container_name: duotasker-redis
+      networks:
+        - app-network
+  
+  volumes:
+    static_volume:
+  
+  networks:
+    app-network:
+      driver: bridge
+  
+  ```
 
-  nginx:
-    image: nginx:alpine
-    container_name: duotasker-web
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /path/to/nginx.conf:/etc/nginx/nginx.conf
-      - /path/to/static:/app/staticfiles/
-    environment:
-      - SERVER_NAME=${SERVER_NAME}
-    depends_on:
-      - duotasker
-    networks:
-      - app-network
-
-  redis:
-    image: "redis:alpine"
-    container_name: duotasker-redis
-    networks:
-      - app-network
-
-volumes:
-  static_volume:
-
-networks:
-  app-network:
-    driver: bridge
-
-```
-
+<div align="center">
+  
  **Run with Docker Compose:**
+ 
+</div>
 
 ```
 docker compose up -d
 ```
-   
+
+   <div align="center">
 
 ### Accessing the Application
 
@@ -101,11 +108,14 @@ docker compose up -d
 
 ## Create Super User
 
+</div>
+
 ```
 docker-compose exec -it duotasker python manage.py createsuperuser
 
 ```
 
+<div align="center">
 
 ## Contributing
 
