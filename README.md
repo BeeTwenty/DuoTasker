@@ -1,5 +1,7 @@
 # DuoTasker
 
+  
+  ![GitHub Repo stars](https://img.shields.io/github/stars/beetwenty/duotasker?logo=github) ![Docker Pulls](https://img.shields.io/docker/pulls/beetwenty/duotasker?logo=docker) ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/beetwenty/duotasker/latest?label=docker%20image%20ver.) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/beetwenty/duotasker/master?logo=github)
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg?color=3F51B5&style=for-the-badge&label=License&logoColor=000000&labelColor=ececec" alt="License: MIT"></a>
 
 DuoTasker is a Django-based web application designed for efficient task management, utilizing Django, Nginx, and Redis.
