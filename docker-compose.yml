@@ -2,7 +2,6 @@ services:
   duotasker:
     build: .
     volumes:
-      - .:/app
       - ./static:/app/staticfiles
     depends_on:
       - redis
