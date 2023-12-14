@@ -42,7 +42,7 @@ services:
   duotasker:
     image: beetwenty/duotasker:latest
     volumes:
-      - ./static/:/app/staticfiles/
+      - /path/to/static/:/app/staticfiles/
     depends_on:
       - redis
     networks:
@@ -54,8 +54,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./static:/app/staticfiles/
+      - /path/to/nginx.conf:/etc/nginx/nginx.conf
+      - /path/to/static:/app/staticfiles/
     environment:
       - SERVER_NAME=${SERVER_NAME}
     depends_on:
