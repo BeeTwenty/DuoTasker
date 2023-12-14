@@ -8,12 +8,11 @@ Set up and run DuoTasker on your local machine or production environment using D
 
 ### Prerequisites
 
-- Docker
-- Docker Compose (optional, for Docker Compose method)
+- Docker Compose
 
 ### Installation and Usage
 
-#### Using Docker Run
+#### Using Docker Compose
 
 1. **Set Up Environment Variables:**
    - Create a .env file with necessary configurations:
@@ -28,15 +27,8 @@ Set up and run DuoTasker on your local machine or production environment using D
     SERVER_NAME=your_domain.com or ip
     ```
      
-2. **Run the Docker Image:**
-   ```shell
-   docker run -p 8887:80 -p 8888:443 --env-file .env beetwenty/duotasker:latest
 
-   ```
-
-#### Using Docker Compose
-
-1. **Create a Docker Compose File:**
+2. **Create a Docker Compose File:**
 ```yml
 services:
   duotasker:
