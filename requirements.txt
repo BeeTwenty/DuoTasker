@@ -1,4 +1,4 @@
-﻿asgiref==3.7.2
+asgiref==3.7.2
 async-timeout==4.0.3
 channels==4.0.0
 channels-redis==4.1.0

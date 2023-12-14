@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# Activate the virtual environment
+. /app/venv/bin/activate
 
 # Apply database migrations
 echo "Applying database migrations..."
