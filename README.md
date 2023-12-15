@@ -32,6 +32,9 @@ Set up and run DuoTasker on your local machine or production environment using D
       CSRF_TRUSTED_ORIGINS=http(s)://your_domain.com or ip
       TIME_ZONE=Your_Time_Zone
       SERVER_NAME=your_domain.com or ip
+      DJANGO_SUPERUSER_USERNAME=admin
+      DJANGO_SUPERUSER_EMAIL=admin@example.com
+      DJANGO_SUPERUSER_PASSWORD=adminpassword
   ```
      
 
