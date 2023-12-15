@@ -1,9 +1,9 @@
 // Cache name
-var CACHE_NAME = 'duotasker-cache-v2';
+var CACHE_NAME = 'duotasker-cache-v3';
 
 // Files you want to cache
 var urlsToCache = [
-  '/static/css/bulma.css'
+  '/static/',
 ];
 
 // Install a service worker
@@ -35,7 +35,7 @@ self.addEventListener('fetch', event => {
 
 // Update a service worker
 self.addEventListener('activate', event => {
-  var cacheWhitelist = ['duotasker-cache-v1'];
+  var cacheWhitelist = ['duotasker-cache-v3'];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
