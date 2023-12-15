@@ -6,7 +6,7 @@
   ![GitHub Repo stars](https://img.shields.io/github/stars/beetwenty/duotasker?logo=github) ![Docker Pulls](https://img.shields.io/docker/pulls/beetwenty/duotasker?logo=docker) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/beetwenty/duotasker/main?logo=github)![LICENSE](https://img.shields.io/github/license/beetwenty/duotasker
 )
 
-DuoTasker is a Django-based web application designed for efficient task management, utilizing Django, Nginx, and Redis.
+DuoTasker is a Django-based web application designed for efficient task management, utilizing Django, Nginx, and Redis. It uses websockets to update task creations, deletion, and markings in realtime so all users have the newest changes at all time.
 
 ## Getting Started
 
@@ -32,6 +32,9 @@ Set up and run DuoTasker on your local machine or production environment using D
       CSRF_TRUSTED_ORIGINS=http(s)://your_domain.com or ip
       TIME_ZONE=Your_Time_Zone
       SERVER_NAME=your_domain.com or ip
+      DJANGO_SUPERUSER_USERNAME=admin
+      DJANGO_SUPERUSER_EMAIL=admin@example.com
+      DJANGO_SUPERUSER_PASSWORD=adminpassword
   ```
      
 
@@ -101,19 +104,16 @@ docker compose up -d
 
  Task management, responsive design, PWA capabilities.
 
-## Configuring Nginx
 
- Modify nginx.conf for custom domain settings.
 
 
 ## Create Super User
 
+
+
+set variables in .env
+
 </div>
-
-```
-docker-compose exec -it duotasker python manage.py createsuperuser
-
-```
 
 <div align="center">
 
