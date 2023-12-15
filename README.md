@@ -109,14 +109,14 @@ docker compose up -d
  Modify nginx.conf for custom domain settings.
 
 
+
 ## Create Super User
 
+
+
+set variables in .env
+
 </div>
-
-```
-docker-compose exec -it duotasker python manage.py createsuperuser
-
-```
 
 <div align="center">
 
