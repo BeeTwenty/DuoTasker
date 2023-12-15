@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [UNRELEASED]
+
+- Fixed issue with favicon and icons
+
 ## [v1.0.3]
 
 - Fixed updating issues tasks show in realtime on all screens when a task is added, deleted and marked/undo
@@ -16,6 +20,6 @@
  -   Fixed docker compse file
 
 
-## [Released]
+## [v1.0.0]
 
 - Initial release

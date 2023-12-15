@@ -1,5 +1,5 @@
 // Cache name
-var CACHE_NAME = 'duotasker-cache-v3';
+var CACHE_NAME = 'duotasker-cache-v4';
 
 // Files you want to cache
 var urlsToCache = [
@@ -35,7 +35,7 @@ self.addEventListener('fetch', event => {
 
 // Update a service worker
 self.addEventListener('activate', event => {
-  var cacheWhitelist = ['duotasker-cache-v3'];
+  var cacheWhitelist = ['duotasker-cache-v4'];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
