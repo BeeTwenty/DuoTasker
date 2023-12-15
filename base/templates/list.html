@@ -43,7 +43,7 @@
                 {% csrf_token %}
                 <div class="field has-addons">
                     <div class="control is-expanded">
-                        <input class="input" type="text" name="title" placeholder="Add new Grocerie">
+                        <input class="input" type="text" name="title" placeholder="Add new Task...">
                     </div>
                     <div class="control">
                         <button type="submit" class="button is-primary"><i class="fas fa-plus"></i></button>
@@ -87,9 +87,10 @@ taskSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     console.log("WebSocket message received:", data);
 
-    // Example: Update the task list based on the action
+  
     
     if (data.action === 'created') {
+        console.log("Task Created:", data.task_id);
     // Create a new task element and add it to the task list
     const newTaskElement = document.createElement('div');
     newTaskElement.id = 'task-' + data.task_id;
@@ -112,12 +113,21 @@ taskSocket.onmessage = function(e) {
         </div>`;
     document.querySelector('.section').appendChild(newTaskElement);
     } else if (data.action === 'completed') {
+        console.log("Task marked as completed:", data.task_id);
         // Mark the task as completed
         document.getElementById('task-title-' + data.task_id).classList.add('has-text-grey-light', 'is-striked');
+        let completeButton = document.getElementById('complete-button-' + data.task_id);
+        completeButton.innerHTML = '<i class="fas fa-undo"></i>';
+        completeButton.classList.replace('is-success', 'is-warning');
     } else if (data.action === 'undone') {
+        console.log("Task marked as undone:", data.task_id);
         // Undo the completion of the task
         document.getElementById('task-title-' + data.task_id).classList.remove('has-text-grey-light', 'is-striked');
+        let completeButton = document.getElementById('complete-button-' + data.task_id);
+        completeButton.innerHTML = '<i class="fas fa-check"></i>';
+        completeButton.classList.replace('is-warning', 'is-success');
     } else if (data.action === 'deleted') {
+        console.log("Task deleted:", data.task_id);
         // Remove the task from the task list
         const taskElement = document.getElementById('task-' + data.task_id);
         if (taskElement) {
@@ -134,30 +144,61 @@ taskSocket.onclose = function(e) {
 
     var taskTimeouts = {};
     function completeTask(taskId) {
-        // Add strikethrough and change button immediately
-        document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
-        let completeButton = document.getElementById('complete-button-' + taskId);
-        completeButton.innerHTML = '<i class="fas fa-undo"></i>';
-        completeButton.classList.replace('is-success', 'is-warning');
-        completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
+    console.log('Complete Task clicked for taskId:', taskId);
+    // Add strikethrough and change button immediately
+    document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
+    let completeButton = document.getElementById('complete-button-' + taskId);
+    completeButton.innerHTML = '<i class="fas fa-undo"></i>';
+    completeButton.classList.replace('is-success', 'is-warning');
+    completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
 
-        // Start 15 seconds timer to delete the task
+    // AJAX POST request to the complete_task view
+    fetch(`/complete_task/${taskId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Task completion response:', data);
+        // Start 15 seconds timer to delete the task after successful response
         taskTimeouts[taskId] = setTimeout(function() {
-        deleteTask(taskId);
-    }, 15000);
+            deleteTask(taskId);
+        }, 15000);
+    })
+    .catch(error => console.error('Error:', error));
 }
 
-    function undoCompleteTask(taskId) {
 
-        clearTimeout(taskTimeouts[taskId]);
-        delete taskTimeouts[taskId];
-        // Remove strikethrough and change button back
+function undoCompleteTask(taskId) {
+    console.log('Undo Complete Task clicked for taskId:', taskId);
+    // Clear the timer to stop the task deletion
+    clearTimeout(taskTimeouts[taskId]);
+    delete taskTimeouts[taskId];
+
+    // AJAX POST request to the undo_complete_task view
+    fetch(`/undo_complete_task/${taskId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Task undo completion response:', data);
+        // Remove strikethrough and change button back after successful response
         document.getElementById('task-title-' + taskId).classList.remove('has-text-grey-light', 'is-striked');
         let completeButton = document.getElementById('complete-button-' + taskId);
         completeButton.innerHTML = '<i class="fas fa-check"></i>';
         completeButton.classList.replace('is-warning', 'is-success');
         completeButton.setAttribute('onclick', `completeTask(${taskId}); return false;`);
-    }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 
     function deleteTask(taskId) {
     fetch(`/delete_task/${taskId}/`, {

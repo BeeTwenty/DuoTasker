@@ -24,12 +24,14 @@ def index(request):
 
 def send_task_update(task_id, action, task_title):
     channel_layer = get_channel_layer()
+    # Determine the correct message type based on the action
+    message_type = f"task.{action}"  # This will create 'task.created', 'task.completed', etc.
     async_to_sync(channel_layer.group_send)(
-        "task_list",  # The name of your group/channel
+        "task_list",
         {
-            "type": "task.update",  # Custom method in your consumer
+            "type": message_type,  # Send specific method type
             "task_id": task_id,
-            "action": action,  # 'created', 'completed', 'undone', 'deleted'
+            "action": action,
             "title": task_title,
         },
     )
@@ -50,7 +52,7 @@ def complete_task(request, task_id):
         task = get_object_or_404(Task, id=task_id)
         task.completed = True
         task.save()
-        send_task_update(task.id, 'completed')
+        send_task_update(task.id, 'completed', task.title)
         return JsonResponse({'status': 'success'})
 
 @login_required
@@ -59,7 +61,7 @@ def undo_complete_task(request, task_id):
         task = get_object_or_404(Task, id=task_id)
         task.completed = False
         task.save()
-        send_task_update(task.id, 'undone')
+        send_task_update(task.id, 'undone', task.title)
         return JsonResponse({'status': 'success'})
 
 @login_required
@@ -67,5 +69,5 @@ def delete_task(request, task_id):
     if request.method == 'POST':
         task = get_object_or_404(Task, id=task_id)
         task.delete()
-        send_task_update(task_id, 'deleted')
+        send_task_update(task_id, 'deleted', task.title)
         return JsonResponse({'status': 'success'})
