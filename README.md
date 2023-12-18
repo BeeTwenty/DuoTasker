@@ -45,7 +45,7 @@ DJANGO_SUPERUSER_PASSWORD=adminpassword
 DB_NAME=duotakser
 DB_USER=duotasker
 DB_PASSWORD=duotasker
-DB_HOST=db
+DB_HOST=postgres
 DB_PORT=5432
   ```
      
@@ -54,44 +54,56 @@ DB_PORT=5432
    
   ```yml
   services:
-    duotasker:
-      container_name: duotasker
-      image: beetwenty/duotasker:latest
-      volumes:
-        - /path/to/static/:/app/staticfiles/
-      depends_on:
-        - redis
-      networks:
-        - app-network
-  
-    nginx:
-      image: nginx:alpine
-      container_name: duotasker-web
-      ports:
-        - "80:80"
-        - "443:443"
-      volumes:
-        - /path/to/nginx.conf:/etc/nginx/nginx.conf
-        - /path/to/static:/app/staticfiles/
-      environment:
-        - SERVER_NAME=${SERVER_NAME}
-      depends_on:
-        - duotasker
-      networks:
-        - app-network
-  
-    redis:
-      image: "redis:alpine"
-      container_name: duotasker-redis
-      networks:
-        - app-network
-  
-  volumes:
-    static_volume:
-  
-  networks:
-    app-network:
-      driver: bridge
+  duotasker:
+    image: beetwenty/duotasker:latest
+    restart: always
+    volumes:
+      - /path/to/static/:/app/staticfiles/
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /path/to/nginx.conf:/etc/nginx/nginx.conf
+      - /path/to/static:/app/staticfiles/
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
+    depends_on:
+      - duotasker
+    networks:
+      - app-network
+
+  redis:
+    image: "redis:alpine"
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - /path/to/postgresql:/var/lib/postgresql/data/
+    networks:
+      - app-network
+
+volumes:
+  static_volume:
+
+networks:
+  app-network:
+    driver: bridge
   
   ```
 
