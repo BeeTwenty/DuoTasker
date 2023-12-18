@@ -24,9 +24,13 @@
         margin-bottom: 10px; /* More space between controls */
     }
 
+
     .box {
-        padding: 20px; /* More padding inside boxes */
+      /* Adjust the max-height to make boxes shorter on mobile */
+      max-height: 100px; /* You can adjust the max-height as needed */
+      overflow: hidden; /* Hide content that overflows the max-height */
     }
+
 
     .media-right {
         margin-top: 10px; /* Space above buttons in each task */
@@ -53,6 +57,7 @@
         </div>
 
         {% for task in tasks %}
+        
         <div class="box" id="task-{{ task.id }}">
             <article class="media">
                 <div class="media-content">
@@ -70,8 +75,9 @@
                 </div>
             </article>
         </div>
+   
         {% endfor %}
-    </div>
+     </div>
 </div>
 
 <script>

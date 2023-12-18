@@ -1,15 +1,18 @@
 services:
   duotasker:
     image: beetwenty/duotasker:latest
+    restart: always
     volumes:
       - /path/to/static/:/app/staticfiles/
     depends_on:
       - redis
+      - postgres
     networks:
       - app-network
 
   nginx:
     image: nginx:alpine
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -25,6 +28,18 @@ services:
 
   redis:
     image: "redis:alpine"
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - /path/to/postgresql:/var/lib/postgresql/data/
     networks:
       - app-network
 
