@@ -26,15 +26,27 @@ Set up and run DuoTasker on your local machine or production environment using D
   </div>
   
   ```env
-      SECRET_KEY=your_secret_key
-      DEBUG=False
-      ALLOWED_HOSTS=your_domain.com or ip
-      CSRF_TRUSTED_ORIGINS=http(s)://your_domain.com or ip
-      TIME_ZONE=Your_Time_Zone
-      SERVER_NAME=your_domain.com or ip
-      DJANGO_SUPERUSER_USERNAME=admin
-      DJANGO_SUPERUSER_EMAIL=admin@example.com
-      DJANGO_SUPERUSER_PASSWORD=adminpassword
+ # Django settings
+SECRET_KEY=VERY_SECRET_KEY
+DEBUG=True
+ALLOWED_HOSTS=
+CSRF_TRUSTED_ORIGINS=
+TIME_ZONE=UTC
+
+# Nginx settings
+SERVER_NAME=localhost
+
+# SuperUser settings
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=adminpassword
+
+# Database
+DB_NAME=duotakser
+DB_USER=duotasker
+DB_PASSWORD=duotasker
+DB_HOST=db
+DB_PORT=5432
   ```
      
 
