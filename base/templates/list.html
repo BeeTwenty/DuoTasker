@@ -50,6 +50,17 @@
                         <input class="input" type="text" name="title" placeholder="Add new Task...">
                     </div>
                     <div class="control">
+                        <div class="select">
+                            <select name="category">
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="control">
                         <button type="submit" class="button is-primary"><i class="fas fa-plus"></i></button>
                     </div>
                 </div>
@@ -64,6 +75,8 @@
                     <div class="content">
                         <h3 id="task-title-{{ task.id }}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
                             <strong>{{ task.title }}</strong>
+                            <span class="tag is-light"><i class="{{ task.category.icon }}"></i></span>
+
                         </h3>
                     </div>
                 </div>
@@ -77,6 +90,7 @@
         </div>
    
         {% endfor %}
+        
      </div>
 </div>
 
@@ -169,13 +183,22 @@ taskSocket.onclose = function(e) {
     .then(response => response.json())
     .then(data => {
         console.log('Task completion response:', data);
-        // Start 15 seconds timer to delete the task after successful response
-        taskTimeouts[taskId] = setTimeout(function() {
-            deleteTask(taskId);
-        }, 5000);
+
+        let countdown = 5; // Initial countdown value in seconds
+
+        // Log the countdown in the console
+        const countdownInterval = setInterval(function() {
+            console.log('Countdown:', countdown);
+            countdown--;
+
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                deleteTask(taskId);
+            }
+        }, 1000); // Log every 1 second (1000 milliseconds)
     })
     .catch(error => console.error('Error:', error));
-}
+    }
 
 
 function undoCompleteTask(taskId) {

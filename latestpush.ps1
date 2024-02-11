@@ -2,7 +2,7 @@
 
 
 # Build the Docker image
-docker build --no-cache -t duotasker:latest .
+docker build -t duotasker:latest .
 
 # Tag the image
 docker tag duotasker:latest beetwenty/duotasker:latest

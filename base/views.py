@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from .models import Task
+from .models import Task, Category
+from .forms import TaskForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from channels.layers import get_channel_layer
@@ -19,8 +20,10 @@ def register(request):
 
 @login_required
 def index(request):
-    tasks = Task.objects.all()
-    return render(request, 'list.html', {'tasks': tasks})
+    tasks = Task.objects.select_related('category').order_by('-category__is_important', 'title')
+    categories = Category.objects.all().order_by('-is_important', 'name')
+
+    return render(request, 'list.html', {'tasks': tasks, 'categories': categories})
 
 def send_task_update(task_id, action, task_title):
     channel_layer = get_channel_layer()
@@ -40,11 +43,18 @@ def send_task_update(task_id, action, task_title):
 def create_task(request):
     if request.method == 'POST':
         title = request.POST.get('title')
-        task = Task(title=title)
+        category_id = request.POST.get('category')  # Get the category id from the form
+        category = Category.objects.get(id=category_id)  # Get the selected category object by id
+        
+        task = Task(title=title, category=category)
         task.save()
         send_task_update(task.id, 'created', task.title)
         return redirect('list')
-    return render(request, 'list')
+    else:
+        
+        categories = Category.objects.all().order_by('-is_important', 'name')
+        return render(request, 'create_task.html', {'categories': categories})
+
 
 @login_required
 def complete_task(request, task_id):
