@@ -1,6 +1,12 @@
 # CHANGELOG
+## [v1.0.5]
 
-## [UNRELEASED]
+- changed deletion time from 15 to 5 sec
+
+- added categories
+    - categories are sortet and importent are at the top
+
+## [v1.0.4]
 
 - Fixed issue with favicon and icons
 
