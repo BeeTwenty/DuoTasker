@@ -53,7 +53,7 @@ def create_task(request):
     else:
         
         categories = Category.objects.all().order_by('-is_important', 'name')
-        return render(request, 'create_task.html', {'categories': categories})
+        return render(request, 'create_task.html', {'categories': categories}) 
 
 
 @login_required
