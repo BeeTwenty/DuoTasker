@@ -22,8 +22,9 @@ def register(request):
 def index(request):
     tasks = Task.objects.select_related('category').order_by('-category__is_important', 'title')
     categories = Category.objects.all().order_by('-is_important', 'name')
+    uncategorized_tasks = Task.objects.filter(category__isnull=True)
 
-    return render(request, 'list.html', {'tasks': tasks, 'categories': categories})
+    return render(request, 'list.html', {'tasks': tasks, 'categories': categories, 'uncategorized_tasks': uncategorized_tasks})
 
 def send_task_update(task_id, action, task_title):
     channel_layer = get_channel_layer()
@@ -43,17 +44,33 @@ def send_task_update(task_id, action, task_title):
 def create_task(request):
     if request.method == 'POST':
         title = request.POST.get('title')
-        category_id = request.POST.get('category')  # Get the category id from the form
-        category = Category.objects.get(id=category_id)  # Get the selected category object by id
+        category_id = request.POST.get('category', None)  # Get category ID from the form
+
+        # Attempt to auto-categorize the task based on title keywords, or use the selected category
+        category = None  # Default to None if no category is found or selected
+        all_categories = Category.objects.all()
+        for cat in all_categories:
+            if cat.keywords:
+                keywords = [kw.strip().lower() for kw in cat.keywords.split(',')]
+                if any(keyword in title.lower() for keyword in keywords):
+                    category = cat
+                    break
         
+        # If auto-categorization did not find a category, and a category was manually selected
+        if not category and category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except (ValueError, Category.DoesNotExist):
+                category = None  # If category_id is invalid or does not exist, default to None
+
         task = Task(title=title, category=category)
         task.save()
         send_task_update(task.id, 'created', task.title)
         return redirect('list')
     else:
-        
         categories = Category.objects.all().order_by('-is_important', 'name')
         return render(request, 'create_task.html', {'categories': categories})
+
 
 
 @login_required

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load category_tags %}
 {% block content %}
 
 <style>
@@ -49,34 +49,64 @@
                     <div class="control is-expanded">
                         <input class="input" type="text" name="title" placeholder="Add new Task...">
                     </div>
-                    <div class="control">
+                    <div class="control" style="display: none;"> <!-- Optionally hidden category selection -->
                         <div class="select">
                             <select name="category">
+                                <option value="">Auto-select Category</option>
                                 {% for category in categories %}
                                 <option value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
                             </select>
-                            
                         </div>
                     </div>
-                    
                     <div class="control">
-                        <button type="submit" class="button is-primary"><i class="fas fa-plus"></i></button>
+                        <button type="submit" class="button is-primary"><i class="fas fa-plus"></i> Add Task</button>
                     </div>
                 </div>
             </form>
         </div>
 
-        {% for task in tasks %}
-        
+ 
+
+        {% for category in categories %}
+    {% if category.tasks.exists %}
+        <div class="box">
+            <h2 class="title is-4">{{ category.name }}</h2>
+            {% for task in category.tasks.all %}
+                <div class="box" id="task-{{ task.id }}">
+                    <article class="media">
+                        <div class="media-content">
+                            <div class="content">
+                                <h3 id="task-title-{{ task.id }}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
+                                    <strong>{{ task.title }}</strong>
+                                    <span class="tag is-light"><i class="{{ category.icon }}"></i></span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="media-right">
+                            <a href="javascript:void(0);" id="complete-button-{{ task.id }}" class="button is-success" onclick="completeTask('{{ task.id }}');">
+                                <i class="fas fa-check"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+   
+{% with uncategorized_category=categories|get_uncategorized %}
+{% if uncategorized_tasks.exists %}
+<div class="box">
+    <h2 class="title is-4">{{ uncategorized_category.name }}</h2>
+    {% for task in uncategorized_tasks %}
         <div class="box" id="task-{{ task.id }}">
             <article class="media">
                 <div class="media-content">
                     <div class="content">
                         <h3 id="task-title-{{ task.id }}" class="{% if task.completed %}has-text-grey-light is-striked{% endif %}">
                             <strong>{{ task.title }}</strong>
-                            <span class="tag is-light"><i class="{{ task.category.icon }}"></i></span>
-
+                            <span class="tag is-light"><i class="{{ uncategorized_category.icon }}"></i></span> <!-- Updated Line -->
                         </h3>
                     </div>
                 </div>
@@ -84,14 +114,16 @@
                     <a href="javascript:void(0);" id="complete-button-{{ task.id }}" class="button is-success" onclick="completeTask('{{ task.id }}');">
                         <i class="fas fa-check"></i>
                     </a>
-                    
                 </div>
             </article>
         </div>
-   
-        {% endfor %}
-        
-     </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+</div>
+</div>
 </div>
 
 <script>
@@ -270,6 +302,7 @@ function undoCompleteTask(taskId) {
         return cookieValue;
     }
 </script>
+
 
 <style>
     .is-striked {

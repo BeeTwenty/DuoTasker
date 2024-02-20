@@ -1,4 +1,9 @@
 # CHANGELOG
+
+## [v1.0.6]
+
+- modiefied the categories so they are grouped togheter
+
 ## [v1.0.5]
 
 - changed deletion time from 15 to 5 sec

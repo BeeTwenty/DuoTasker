@@ -6,6 +6,9 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     icon = models.CharField(max_length=100)
     is_important = models.BooleanField(default=False)
+    is_uncategorized = models.BooleanField(default=False, help_text="Mark as the special 'Uncategorized' category")
+    keywords = models.TextField(blank=True, null=True, help_text='Comma separated list of keywords to match for this category')
+    
 
     def __str__(self):
         return self.name
