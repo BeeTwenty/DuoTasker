@@ -52,7 +52,7 @@ def create_task(request):
         for cat in all_categories:
             if cat.keywords:
                 keywords = [kw.strip().lower() for kw in cat.keywords.split(',')]
-                if any(keyword in title.lower() for keyword in keywords):
+                if any(keyword == title.lower().strip() for keyword in keywords):
                     category = cat
                     break
         
