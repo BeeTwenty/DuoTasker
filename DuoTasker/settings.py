@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'base',
     'channels',
     'pwa',
+    'fontawesomefree',
 ]
 
 MIDDLEWARE = [

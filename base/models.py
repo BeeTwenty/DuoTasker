@@ -23,6 +23,7 @@ class Task(models.Model):
     id = models.BigAutoField(primary_key=True)
     completed = models.BooleanField(default=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='tasks', null=True)
+    
 
     def __str__(self):
         return self.title

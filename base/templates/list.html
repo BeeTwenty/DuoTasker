@@ -70,7 +70,7 @@
 
         {% for category in categories %}
     {% if category.tasks.exists %}
-        <div class="box">
+        <div class="box" id="category-{{ category.id }}">
             <h2 class="title is-4">{{ category.name }}</h2>
             {% for task in category.tasks.all %}
                 <div class="box" id="task-{{ task.id }}">
@@ -210,7 +210,8 @@ taskSocket.onclose = function(e) {
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ countdown: countdown }) // Send the countdown state to the server
     })
     .then(response => response.json())
     .then(data => {
@@ -261,7 +262,7 @@ function undoCompleteTask(taskId) {
 }
 
 
-    function deleteTask(taskId) {
+function deleteTask(taskId, categoryId) {
     fetch(`/delete_task/${taskId}/`, {
         method: 'POST',
         headers: {
@@ -280,6 +281,17 @@ function undoCompleteTask(taskId) {
             taskElement.classList.add('fade-out');
             taskElement.addEventListener('animationend', function() {
                 taskElement.remove();
+            });
+
+            // Check if the category is now empty
+            fetch(`/get_tasks/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.tasks.length === 0) {
+                    // Remove the category from the list
+                    var categoryElement = document.getElementById('category-' + categoryId);
+                    categoryElement.remove();
+                }
             });
         }
     })

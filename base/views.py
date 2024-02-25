@@ -6,7 +6,19 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.utils import timezone
+from celery import shared_task
+from datetime import datetime
+from celery.schedules import crontab
+from datetime import timedelta
 
+
+CELERY_BEAT_SCHEDULE = {
+    'delete-completed-tasks': {
+        'task': 'myapp.tasks.delete_completed_tasks',
+        'schedule': timedelta(seconds=1),  # Run every second
+    },
+}
 
 def register(request):
     if request.method == 'POST':
@@ -72,12 +84,13 @@ def create_task(request):
         return render(request, 'create_task.html', {'categories': categories})
 
 
-
+@shared_task
 @login_required
 def complete_task(request, task_id):
     if request.method == 'POST':
         task = get_object_or_404(Task, id=task_id)
         task.completed = True
+        task.completed_at = timezone.now()
         task.save()
         send_task_update(task.id, 'completed', task.title)
         return JsonResponse({'status': 'success'})
