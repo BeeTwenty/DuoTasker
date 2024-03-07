@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Uncategorized Items{% endblock %}
+
+{% block content %}
+<a href="{% url 'list' %}" class="button is-primary">Back to List</a>
+<section class="section">
+  <form method="post" action="{% url 'save_category_for_task' %}">
+    {% csrf_token %}
+    <div class="container">
+      <div class="box">
+        <h1 class="title">Uncategorized Items</h1>
+        <p class="subtitle">List of all items that are not categorized</p>
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Task Name</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for task in tasks %}
+            <tr>
+              <td>{{ task.title }}</td> <!-- Adjust to match your Task model's attribute -->
+              <td>
+                <select name="category_for_task_{{ task.id }}">
+                  <option value="">Select a category</option>
+                  {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option> <!-- Adjust these as per your Category model's attributes -->
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
+                <button type="submit" name="save_task" value="{{ task.id }}" class="button is-primary">Save</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+</section>
+{% endblock %}
