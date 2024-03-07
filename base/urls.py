@@ -12,12 +12,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
-<<<<<<< HEAD
-    path('unassigned-tasks/', views.unassigned_tasks, name='unassigned_tasks'),
-    path('assign-category-to-task/', views.assign_to_category, name='assign_category_to_task'),
-=======
     path('uncategorized_tasks/', views.uncategorized_tasks, name='uncategorized_tasks'),
     path('save_category_for_task/', views.save_category_for_task, name='save_category_for_task'),
 
->>>>>>> e97cf58452d26ab47a62e28af3b6da77ba011a73
 ]

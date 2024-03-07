@@ -115,32 +115,6 @@ def delete_task(request, task_id):
 
 
 @login_required
-<<<<<<< HEAD
-def unassigned_tasks(request):
-    tasks_without_category = Task.objects.filter(category__isnull=True)
-    categories = Category.objects.all()
-    return render(request, 'unassigned_tasks.html', {'tasks_without_category': tasks_without_category, 'categories': categories})
-
-
-def assign_to_category(request):
-    if request.method == 'POST':
-        task_id = request.POST.get('task_id')
-        category_id = request.POST.get('category_id')
-        task = Task.objects.get(id=task_id)
-        category = Category.objects.get(id=category_id)
-        
-        # Check if the category's keywords field is not empty
-        if category.keywords:
-            # Append the task's name (or other identifier) to the keywords list
-            category.keywords += f",{task.title}"  # Assuming you want to add the task's name
-        else:
-            # If the keywords field is empty, start the list with this task's name
-            category.keywords = task.title
-
-        category.save()  # Save the category with the updated keywords list
-        
-        return redirect('unassigned_tasks')  # Redirect back to the unassigned tasks page
-=======
 def uncategorized_tasks(request):
     tasks = Task.objects.filter(category__isnull=True)
     task_id = request.POST.get('task_id')
@@ -212,4 +186,3 @@ def save_category_for_task(request):
     else:
         # Handle non-POST request here, maybe redirect or show an error
         return redirect('uncategorized_tasks')
->>>>>>> e97cf58452d26ab47a62e28af3b6da77ba011a73
