@@ -12,4 +12,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('unassigned-tasks/', views.unassigned_tasks, name='unassigned_tasks'),
+    path('assign-category-to-task/', views.assign_to_category, name='assign_category_to_task'),
 ]

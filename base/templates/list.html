@@ -195,42 +195,43 @@ taskSocket.onclose = function(e) {
 
 
     var taskTimeouts = {};
-    function completeTask(taskId) {
-    console.log('Complete Task clicked for taskId:', taskId);
-    // Add strikethrough and change button immediately
-    document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
-    let completeButton = document.getElementById('complete-button-' + taskId);
-    completeButton.innerHTML = '<i class="fas fa-undo"></i>';
-    completeButton.classList.replace('is-success', 'is-warning');
-    completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
 
-    // AJAX POST request to the complete_task view
-    fetch(`/complete_task/${taskId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ countdown: countdown }) // Send the countdown state to the server
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Task completion response:', data);
+    function completeTask(taskId) {
+        console.log('Complete Task clicked for taskId:', taskId);
+        // Add strikethrough and change button immediately
+        document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
+        let completeButton = document.getElementById('complete-button-' + taskId);
+        completeButton.innerHTML = '<i class="fas fa-undo"></i>';
+        completeButton.classList.replace('is-success', 'is-warning');
+        completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
 
         let countdown = 5; // Initial countdown value in seconds
 
-        // Log the countdown in the console
-        const countdownInterval = setInterval(function() {
-            console.log('Countdown:', countdown);
-            countdown--;
+        // AJAX POST request to the complete_task view
+        fetch(`/complete_task/${taskId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ countdown: countdown }) // Send the countdown state to the server
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Task completion response:', data);
 
-            if (countdown < 0) {
-                clearInterval(countdownInterval);
-                deleteTask(taskId);
-            }
-        }, 1000); // Log every 1 second (1000 milliseconds)
-    })
-    .catch(error => console.error('Error:', error));
+            // Log the countdown in the console
+            const countdownInterval = setInterval(function() {
+                console.log('Countdown:', countdown);
+                countdown--;
+
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    deleteTask(taskId);
+                }
+            }, 1000); // Log every 1 second (1000 milliseconds)
+        })
+        .catch(error => console.error('Error:', error));
     }
 
 

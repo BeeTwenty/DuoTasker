@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* Existing styles from list.html */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-out {
+    animation-name: fadeOut;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@media (max-width: 600px) {
+    .input, .button {
+        font-size: 1.2em;
+    }
+    .control {
+        /* Styles for responsive design */
+    }
+}
+
+/* Additional styles for the form */
+.form-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.select-category {
+    padding: 5px 10px;
+    font-size: 1rem;
+}
+.submit-btn {
+    padding: 5px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+</style>
+
+
+<div class="unassigned-tasks">
+    <table>
+        <thead>
+            <tr>
+                <th>Task Name </th>
+                
+                <th> Assign to Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks_without_category %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>
+                    <form action="{% url 'assign_category_to_task' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                        <select name="category_id">
+                            <option value="">Choose Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="submit-btn">Assign</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

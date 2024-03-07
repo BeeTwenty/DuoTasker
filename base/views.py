@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from .models import Task, Category
 from .forms import TaskForm
 from django.contrib.auth.forms import UserCreationForm
@@ -111,3 +112,30 @@ def delete_task(request, task_id):
         task.delete()
         send_task_update(task_id, 'deleted', task.title)
         return JsonResponse({'status': 'success'})
+
+
+@login_required
+def unassigned_tasks(request):
+    tasks_without_category = Task.objects.filter(category__isnull=True)
+    categories = Category.objects.all()
+    return render(request, 'unassigned_tasks.html', {'tasks_without_category': tasks_without_category, 'categories': categories})
+
+
+def assign_to_category(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        category_id = request.POST.get('category_id')
+        task = Task.objects.get(id=task_id)
+        category = Category.objects.get(id=category_id)
+        
+        # Check if the category's keywords field is not empty
+        if category.keywords:
+            # Append the task's name (or other identifier) to the keywords list
+            category.keywords += f",{task.title}"  # Assuming you want to add the task's name
+        else:
+            # If the keywords field is empty, start the list with this task's name
+            category.keywords = task.title
+
+        category.save()  # Save the category with the updated keywords list
+        
+        return redirect('unassigned_tasks')  # Redirect back to the unassigned tasks page
