@@ -115,6 +115,7 @@ def delete_task(request, task_id):
 
 
 @login_required
+<<<<<<< HEAD
 def unassigned_tasks(request):
     tasks_without_category = Task.objects.filter(category__isnull=True)
     categories = Category.objects.all()
@@ -139,3 +140,76 @@ def assign_to_category(request):
         category.save()  # Save the category with the updated keywords list
         
         return redirect('unassigned_tasks')  # Redirect back to the unassigned tasks page
+=======
+def uncategorized_tasks(request):
+    tasks = Task.objects.filter(category__isnull=True)
+    task_id = request.POST.get('task_id')
+    categories = Category.objects.all()
+
+    if request.method == 'POST' and 'save_task' in request.POST:
+        task_id = request.POST['save_task']
+        category_id = request.POST.get(f'category_{task_id}')
+
+        try:
+            task = Task.objects.get(id=task_id)
+            category = Category.objects.get(id=category_id)
+
+            # Assuming your Category model has a `keywords` field that is a comma-separated string
+            if task.name not in category.keywords:
+                category.keywords = f"{category.keywords},{task.name}" if category.keywords else task.name
+                category.save()
+
+            # Update the task's category if necessary
+            task.category = category
+            task.save()
+
+            # Redirect to avoid form resubmission issues
+            return HttpResponseRedirect(reverse('uncategorized_tasks'))
+
+        except (Task.DoesNotExist, Category.DoesNotExist) as e:
+            # Handle the error or pass
+            pass
+
+    return render(request, 'uncategorized_tasks.html', {
+        'tasks': tasks,
+        'categories': categories,
+        'task_id': task_id,
+    })
+
+@login_required
+def save_category_for_task(request):
+    if request.method == 'POST':
+        for key, value in request.POST.items():
+            if key.startswith('category_for_task_'):
+                task_id = key.split('_')[-1]
+                category_id = value
+
+                if task_id and category_id:
+                    try:
+                        task = Task.objects.get(id=task_id)
+                        category = Category.objects.get(id=category_id)
+
+                        # Update category's keywords list
+                        new_keyword = task.title
+                        if category.keywords:
+                            category.keywords += f",{new_keyword}"
+                        else:
+                            category.keywords = new_keyword
+
+                        category.save()
+
+                        # Optionally update the task's category
+                        task.category = category
+                        task.save()
+
+                    except (Task.DoesNotExist, Category.DoesNotExist):
+                        # Handle error: Task or Category not found
+                        pass
+
+        # Redirect to prevent form resubmission issues
+        return redirect('uncategorized_tasks')
+
+    else:
+        # Handle non-POST request here, maybe redirect or show an error
+        return redirect('uncategorized_tasks')
+>>>>>>> e97cf58452d26ab47a62e28af3b6da77ba011a73
