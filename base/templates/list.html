@@ -196,18 +196,18 @@ taskSocket.onclose = function(e) {
 
 
     var taskTimeouts = {};
-
     function completeTask(taskId) {
         console.log('Complete Task clicked for taskId:', taskId);
-        // Add strikethrough and change button immediately
+    
+        let countdown = 5; // Move the countdown initialization here, before fetch
+    
+        // Immediately add strikethrough and change button
         document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
         let completeButton = document.getElementById('complete-button-' + taskId);
         completeButton.innerHTML = '<i class="fas fa-undo"></i>';
         completeButton.classList.replace('is-success', 'is-warning');
         completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
-
-        let countdown = 5; // Initial countdown value in seconds
-
+    
         // AJAX POST request to the complete_task view
         fetch(`/complete_task/${taskId}/`, {
             method: 'POST',
@@ -215,17 +215,17 @@ taskSocket.onclose = function(e) {
                 'X-CSRFToken': getCookie('csrftoken'),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ countdown: countdown }) // Send the countdown state to the server
+            body: JSON.stringify({ countdown: countdown }) // Now countdown is defined before this line
         })
         .then(response => response.json())
         .then(data => {
             console.log('Task completion response:', data);
-
-            // Log the countdown in the console
+    
+            // Start the countdown after getting a successful response
             const countdownInterval = setInterval(function() {
                 console.log('Countdown:', countdown);
                 countdown--;
-
+    
                 if (countdown < 0) {
                     clearInterval(countdownInterval);
                     deleteTask(taskId);
@@ -234,6 +234,7 @@ taskSocket.onclose = function(e) {
         })
         .catch(error => console.error('Error:', error));
     }
+    
 
 
 function undoCompleteTask(taskId) {
