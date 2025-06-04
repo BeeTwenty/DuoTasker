@@ -129,8 +129,9 @@ def uncategorized_tasks(request):
             category = Category.objects.get(id=category_id)
 
             # Assuming your Category model has a `keywords` field that is a comma-separated string
-            if task.name not in category.keywords:
-                category.keywords = f"{category.keywords},{task.name}" if category.keywords else task.name
+            # Ensure category keywords exist before checking for the task title
+            if not category.keywords or task.title not in category.keywords:
+                category.keywords = f"{category.keywords},{task.title}" if category.keywords else task.title
                 category.save()
 
             # Update the task's category if necessary
