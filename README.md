@@ -42,7 +42,7 @@ DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=adminpassword
 
 # Database
-DB_NAME=duotakser
+DB_NAME=duotasker
 DB_USER=duotasker
 DB_PASSWORD=duotasker
 DB_HOST=postgres
