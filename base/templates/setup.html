@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8-tablet is-6-desktop is-5-widescreen">
+                <form method="post" class="box">
+                    {% csrf_token %}
+                    <h1 class="title is-4">{% trans "DuoTasker initial setup" %}</h1>
+                    <p class="subtitle is-6">{% trans "Create your first admin user, choose language and timezone, and optionally load predefined categories." %}</p>
+
+                    {% if form.errors %}
+                    <article class="message is-danger">
+                        <div class="message-body">
+                            {% trans "Please fix the errors below." %}
+                        </div>
+                    </article>
+                    {% endif %}
+
+                    <div class="field">
+                        <label class="label" for="id_username">{% trans "Admin username" %}</label>
+                        <div class="control">{{ form.username }}</div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_email">{% trans "Admin email" %}</label>
+                        <div class="control">{{ form.email }}</div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_password1">{% trans "Password" %}</label>
+                        <div class="control">{{ form.password1 }}</div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_password2">{% trans "Confirm password" %}</label>
+                        <div class="control">{{ form.password2 }}</div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_default_language">{% trans "Default language" %}</label>
+                        <div class="control">{{ form.default_language }}</div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_default_timezone">{% trans "Default timezone" %}</label>
+                        <div class="control">{{ form.default_timezone }}</div>
+                    </div>
+
+                    <div class="field">
+                        <label class="checkbox">
+                            {{ form.add_predefined_categories }} {% trans "Add predefined shopping categories for selected language" %}
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <button type="submit" class="button is-primary">{% trans "Complete setup" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

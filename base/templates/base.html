@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load i18n %}
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
 <head>
     <meta charset="UTF-8">
     <title>DuoTasker</title>
@@ -31,6 +32,21 @@
 
 </head>
 <body>
+<section class="section" style="padding-bottom: 0.75rem;">
+  <div class="container" style="display: flex; justify-content: flex-end;">
+    <form action="{% url 'set_language' %}" method="post" style="display: flex; gap: 0.5rem; align-items: center;">
+      {% csrf_token %}
+      <label class="label" for="language-select" style="margin-bottom: 0;">{% trans "Language" %}</label>
+      <div class="select is-small">
+        <select id="language-select" name="language" onchange="this.form.submit()">
+          <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+          <option value="nb" {% if LANGUAGE_CODE == 'nb' %}selected{% endif %}>Norsk</option>
+        </select>
+      </div>
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    </form>
+  </div>
+</section>
 {% block content %}
 {% endblock %}
 </body>

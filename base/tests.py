@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 import json
 from django.test import TransactionTestCase, override_settings
 from asgiref.sync import async_to_sync
@@ -179,6 +180,40 @@ class TaskApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         mocked_broadcast.assert_called_once_with(task.id, 'deleted', 'Remove me')
         self.assertFalse(Task.objects.filter(id=task.id).exists())
+
+
+class SetupViewTest(TestCase):
+    def test_setup_page_is_accessible_before_initialization(self):
+        response = self.client.get(reverse('setup'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_setup_post_creates_admin_configuration_and_predefined_categories(self):
+        response = self.client.post(
+            reverse('setup'),
+            data={
+                'username': 'owner',
+                'email': 'owner@example.com',
+                'password1': 'SuperSecret123',
+                'password2': 'SuperSecret123',
+                'default_language': 'nb',
+                'default_timezone': 'Europe/Oslo',
+                'add_predefined_categories': 'on',
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(username='owner', is_superuser=True).exists())
+        self.assertTrue(Category.objects.filter(name='Meieri').exists())
+
+    def test_set_language_endpoint_updates_session(self):
+        response = self.client.post(
+            reverse('set_language'),
+            data={'language': 'nb', 'next': '/setup/'},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(settings.LANGUAGE_COOKIE_NAME, response.cookies)
+        self.assertEqual(response.cookies[settings.LANGUAGE_COOKIE_NAME].value, 'nb')
 
 
 class RealtimeEventTest(TestCase):

@@ -38,4 +38,13 @@ class Task(models.Model):
             models.Index(fields=['category']),
             models.Index(fields=['title']),
         ]
+
+
+class SiteConfiguration(models.Model):
+    default_language = models.CharField(max_length=8, default='en')
+    default_timezone = models.CharField(max_length=64, default='UTC')
+    setup_complete = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Site configuration ({self.default_language}, {self.default_timezone})"
     

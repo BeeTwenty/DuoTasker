@@ -48,11 +48,6 @@ DB_PORT=5432
 # Redis
 REDIS_HOST=redis
 REDIS_PORT=6379
-  ```
-     
-
-   **Create a Docker Compose File:**
-   
   ```yml
   services:
   postgres:
@@ -130,6 +125,18 @@ docker compose up -d --build
 
  **Localhost:** http://localhost:80
  **Production:** Replace localhost with your domain.
+
+## First-run Setup Wizard
+
+On first start, open `/setup/`.
+
+The setup page lets you:
+- create the first admin user (no env-based superuser required)
+- choose default timezone
+- choose default language (English or Norwegian)
+- optionally load predefined shopping categories in the selected language
+
+After setup is completed, normal app routes are enabled.
 
 ## Features
 

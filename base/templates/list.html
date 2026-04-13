@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load category_tags %}
 {% load static %}
+{% load i18n %}
 {% block content %}
 
 <style>
@@ -40,7 +41,7 @@
 
 
 </style>
-<a href="{% url 'uncategorized_tasks' %}" class="button is-primary">Uncategorized</a>
+<a href="{% url 'uncategorized_tasks' %}" class="button is-primary">{% trans "Uncategorized" %}</a>
 
 <div class="container">
     <div class="section">
@@ -49,12 +50,12 @@
                 {% csrf_token %}
                 <div class="field has-addons">
                     <div class="control is-expanded">
-                        <input class="input" type="text" name="title" placeholder="Add new Task...">
+                        <input class="input" type="text" name="title" placeholder="{% trans 'Add new item...' %}">
                     </div>
                     <div class="control" style="display: none;"> <!-- Optionally hidden category selection -->
                         <div class="select">
                             <select name="category">
-                                <option value="">Auto-select Category</option>
+                                <option value="">{% trans "Auto-select category" %}</option>
                                 {% for category in categories %}
                                 <option value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
@@ -62,7 +63,7 @@
                         </div>
                     </div>
                     <div class="control">
-                        <button type="submit" class="button is-primary"><i class="fas fa-plus"></i> Add Task</button>
+                        <button type="submit" class="button is-primary"><i class="fas fa-plus"></i> {% trans "Add item" %}</button>
                     </div>
                 </div>
             </form>

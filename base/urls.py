@@ -5,6 +5,7 @@ from apps.tasks import api as task_api
 
 
 urlpatterns = [
+    path('setup/', views.setup, name='setup'),
     path('', views.index, name='list'),
     path('create_task', views.create_task, name='create_task'),
     path('complete_task/<int:task_id>/', views.complete_task, name='complete_task'),

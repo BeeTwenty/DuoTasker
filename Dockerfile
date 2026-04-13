@@ -1,6 +1,8 @@
 # Use an official Python runtime as a parent image
 FROM python:3.12.1
 
+RUN apt-get update && apt-get install -y --no-install-recommends gettext && rm -rf /var/lib/apt/lists/*
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -17,6 +19,8 @@ RUN python -m venv venv && \
 
 # Copy the current directory contents into the container at /app/
 COPY . /app/
+
+RUN python manage.py compilemessages
 
 # Copy the entrypoint script into the container at /app/
 COPY entrypoint.sh /app/

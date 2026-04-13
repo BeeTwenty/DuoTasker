@@ -39,10 +39,6 @@ python manage.py migrate
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Create superuser
-echo "Creating superuser..."
-python manage.py createinitialsuperuser
-
 
 # Start server
 echo "Starting server..."

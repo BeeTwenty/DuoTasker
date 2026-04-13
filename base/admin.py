@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Task
+from .models import Category, SiteConfiguration, Task
 
 
 @admin.register(Category)
@@ -24,3 +24,8 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'completed')
     search_fields = ('title',)
     list_filter = ('completed', 'category')
+
+
+@admin.register(SiteConfiguration)
+class SiteConfigurationAdmin(admin.ModelAdmin):
+    list_display = ('default_language', 'default_timezone', 'setup_complete')

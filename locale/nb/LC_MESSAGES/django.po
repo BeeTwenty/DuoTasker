@@ -1,0 +1,111 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: DuoTasker\n"
+"POT-Creation-Date: 2026-04-13 19:30+0000\n"
+"PO-Revision-Date: 2026-04-13 19:30+0000\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Language"
+msgstr "Sprak"
+
+msgid "Username"
+msgstr "Brukernavn"
+
+msgid "Your username"
+msgstr "Ditt brukernavn"
+
+msgid "Password"
+msgstr "Passord"
+
+msgid "Your password"
+msgstr "Ditt passord"
+
+msgid "Login"
+msgstr "Logg inn"
+
+msgid "Create account"
+msgstr "Opprett konto"
+
+msgid "Please fix the errors below."
+msgstr "Vennligst rett feilene under."
+
+msgid "Confirm password"
+msgstr "Bekreft passord"
+
+msgid "Register"
+msgstr "Registrer"
+
+msgid "Back to login"
+msgstr "Tilbake til innlogging"
+
+msgid "DuoTasker initial setup"
+msgstr "DuoTasker forstegangsoppsett"
+
+msgid "Create your first admin user, choose language and timezone, and optionally load predefined categories."
+msgstr "Opprett din forste adminbruker, velg sprak og tidssone, og last eventuelt forhandsdefinerte kategorier."
+
+msgid "Admin username"
+msgstr "Adminbrukernavn"
+
+msgid "Admin email"
+msgstr "Admin e-post"
+
+msgid "Default language"
+msgstr "Standardsprak"
+
+msgid "Default timezone"
+msgstr "Standard tidssone"
+
+msgid "Add predefined shopping categories for selected language"
+msgstr "Legg til forhandsdefinerte handlekategorier for valgt sprak"
+
+msgid "Complete setup"
+msgstr "Fullfor oppsett"
+
+msgid "Uncategorized"
+msgstr "Ukategorisert"
+
+msgid "Add new item..."
+msgstr "Legg til ny vare..."
+
+msgid "Auto-select category"
+msgstr "Velg kategori automatisk"
+
+msgid "Add item"
+msgstr "Legg til vare"
+
+msgid "Uncategorized items"
+msgstr "Ukategoriserte varer"
+
+msgid "Back to list"
+msgstr "Tilbake til listen"
+
+msgid "List of all items that are not categorized"
+msgstr "Liste over alle varer som ikke er kategorisert"
+
+msgid "Item name"
+msgstr "Varenavn"
+
+msgid "Category"
+msgstr "Kategori"
+
+msgid "Actions"
+msgstr "Handlinger"
+
+msgid "Select a category"
+msgstr "Velg en kategori"
+
+msgid "Save"
+msgstr "Lagre"
+
+msgid "English"
+msgstr "Engelsk"
+
+msgid "Norwegian Bokmal"
+msgstr "Norsk Bokmal"
+
+msgid "Method not allowed"
+msgstr "Metode ikke tillatt"

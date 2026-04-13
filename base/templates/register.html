@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 <div class="section">
@@ -7,32 +8,32 @@
 			<div class="column is-6-tablet is-5-desktop is-4-widescreen">
 				<form method="post" class="box">
 					{% csrf_token %}
-					<h1 class="title is-4">Create Account</h1>
+					<h1 class="title is-4">{% trans "Create account" %}</h1>
 
 					{% if form.errors %}
 						<article class="message is-danger">
 							<div class="message-body">
-								Please fix the errors below.
+								{% trans "Please fix the errors below." %}
 							</div>
 						</article>
 					{% endif %}
 
 					<div class="field">
-						<label class="label" for="id_username">Username</label>
+						<label class="label" for="id_username">{% trans "Username" %}</label>
 						<div class="control">
 							{{ form.username }}
 						</div>
 					</div>
 
 					<div class="field">
-						<label class="label" for="id_password1">Password</label>
+						<label class="label" for="id_password1">{% trans "Password" %}</label>
 						<div class="control">
 							{{ form.password1 }}
 						</div>
 					</div>
 
 					<div class="field">
-						<label class="label" for="id_password2">Confirm Password</label>
+						<label class="label" for="id_password2">{% trans "Confirm password" %}</label>
 						<div class="control">
 							{{ form.password2 }}
 						</div>
@@ -40,10 +41,10 @@
 
 					<div class="field is-grouped is-justify-content-space-between">
 						<div class="control">
-							<button type="submit" class="button is-primary">Register</button>
+							<button type="submit" class="button is-primary">{% trans "Register" %}</button>
 						</div>
 						<div class="control">
-							<a href="{% url 'login' %}" class="button is-light">Back to Login</a>
+							<a href="{% url 'login' %}" class="button is-light">{% trans "Back to login" %}</a>
 						</div>
 					</div>
 				</form>
