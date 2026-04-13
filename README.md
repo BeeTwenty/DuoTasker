@@ -135,6 +135,32 @@ docker compose up -d --build
 
  Task management, responsive design, PWA capabilities.
 
+## Smart Categories
+
+Categories can use multilingual aliases in the `keywords` field. For shopping lists, that means a category can learn item names such as `milk, melk, lait` instead of only full task phrases.
+
+The smart categorizer is built into the app and works in two stages:
+- a fast rules layer for exact aliases, phrase matches, and token overlap
+- a built-in statistical classifier for ambiguous items and learned behavior
+
+It supports:
+- exact item matching
+- phrase and token matching
+- accent folding such as `brod` matching `brød`
+- multilingual aliases stored per category
+- learned classification from previously categorized items
+
+How it works:
+- Every category builds training examples from its name, its keyword aliases, and all already-categorized task titles.
+- Input text is normalized across languages using case folding, accent folding, and Nordic-character simplification.
+- The built-in classifier extracts both word tokens and character trigrams, which makes it more robust for short shopping items and multilingual spelling differences.
+- When a user manually assigns an item to a category, that item title becomes part of future learning for that category.
+
+In practice, this means:
+- `milk`, `melk`, and `lait` can all point at the same category if listed as aliases.
+- `brød` can still match a bakery category even if the saved alias is `brod`.
+- If many dairy items like `yoghurt`, `kefir`, and `milk` have been categorized under Dairy before, new dairy-like items are more likely to land there even without an exact alias.
+
 
 
 

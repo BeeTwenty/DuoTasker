@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from base.models import Category, Task
+from apps.tasks.categorization import resolve_category
 
 
 @dataclass
@@ -39,11 +40,9 @@ class TaskService:
 
     @classmethod
     def _resolve_category_for_title(cls, title: str, category_id: Optional[int]) -> Optional[Category]:
-        normalized = title.lower()
-        for category in Category.objects.all():
-            for keyword in cls._keyword_list(category.keywords):
-                if keyword.lower() == normalized:
-                    return category
+        best_match = resolve_category(title, Category.objects.all())
+        if best_match is not None:
+            return best_match
 
         if category_id is None:
             return None

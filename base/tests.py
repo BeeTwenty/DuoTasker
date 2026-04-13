@@ -83,6 +83,44 @@ class TaskServiceTest(TestCase):
 
         self.assertEqual(created.category_id, category.id)
 
+    def test_create_task_auto_matches_category_by_phrase_containment(self):
+        category = Category.objects.create(name="Groceries", icon="cart", keywords="Buy milk")
+
+        created = TaskService.create_task(TaskCreationInput(title="Buy milk and bread"))
+
+        self.assertEqual(created.category_id, category.id)
+
+    def test_create_task_prefers_more_specific_keyword_match(self):
+        Category.objects.create(name="General", icon="note", keywords="Buy")
+        specific = Category.objects.create(name="Groceries", icon="cart", keywords="Buy milk")
+
+        created = TaskService.create_task(TaskCreationInput(title="Buy milk tonight"))
+
+        self.assertEqual(created.category_id, specific.id)
+
+    def test_create_task_matches_multilanguage_keyword(self):
+        category = Category.objects.create(name="Dairy", icon="cart", keywords="milk, melk")
+
+        created = TaskService.create_task(TaskCreationInput(title="melk"))
+
+        self.assertEqual(created.category_id, category.id)
+
+    def test_create_task_matches_accent_folded_keyword(self):
+        category = Category.objects.create(name="Bakery", icon="bread", keywords="brod")
+
+        created = TaskService.create_task(TaskCreationInput(title="brød"))
+
+        self.assertEqual(created.category_id, category.id)
+
+    def test_create_task_uses_builtin_statistical_match_from_existing_items(self):
+        dairy = Category.objects.create(name="Dairy", icon="cart", keywords="milk, melk")
+        Category.objects.create(name="Bakery", icon="bread", keywords="bread, brod")
+        Task.objects.create(title="yoghurt naturell", category=dairy)
+
+        created = TaskService.create_task(TaskCreationInput(title="gresk yoghurt"))
+
+        self.assertEqual(created.category_id, dairy.id)
+
     def test_assign_task_category_adds_keyword_once(self):
         category = Category.objects.create(name="Work", icon="briefcase", keywords="Daily standup")
         task = Task.objects.create(title="Daily standup")
