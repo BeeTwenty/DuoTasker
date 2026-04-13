@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load category_tags %}
+{% load static %}
 {% block content %}
 
 <style>
@@ -74,7 +75,7 @@
         <div class="box" id="category-{{ category.id }}">
             <h2 class="title is-4">{{ category.name }}</h2>
             {% for task in category.tasks.all %}
-                <div class="box" id="task-{{ task.id }}">
+                <div class="box" id="task-{{ task.id }}" data-category-id="{{ category.id }}">
                     <article class="media">
                         <div class="media-content">
                             <div class="content">
@@ -101,7 +102,7 @@
 <div class="box">
     <h2 class="title is-4">{{ uncategorized_category.name }}</h2>
     {% for task in uncategorized_tasks %}
-        <div class="box" id="task-{{ task.id }}">
+        <div class="box" id="task-{{ task.id }}" data-category-id="">
             <article class="media">
                 <div class="media-content">
                     <div class="content">
@@ -127,196 +128,7 @@
 </div>
 </div>
 
-<script>
-
-
-
-const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-const taskSocket = new WebSocket(
-    wsScheme + window.location.host + '/ws/tasks/'
-);
-
-taskSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    console.log("WebSocket message received:", data);
-
-  
-    
-    if (data.action === 'created') {
-        console.log("Task Created:", data.task_id);
-    // Create a new task element and add it to the task list
-    const newTaskElement = document.createElement('div');
-    newTaskElement.id = 'task-' + data.task_id;
-    newTaskElement.innerHTML = `
-        <div class="box">
-            <article class="media">
-                <div class="media-content">
-                    <div class="content">
-                        <h3 id="task-title-${data.task_id}" class="">
-                            <strong>${data.title}</strong> 
-                        </h3>
-                    </div>
-                </div>
-                <div class="media-right">
-                    <a href="javascript:void(0);" id="complete-button-${data.task_id}" class="button is-success" onclick="completeTask('${data.task_id}');">
-                        <i class="fas fa-check"></i>
-                    </a>
-                </div>
-            </article>
-        </div>`;
-    document.querySelector('.section').appendChild(newTaskElement);
-    } else if (data.action === 'completed') {
-        console.log("Task marked as completed:", data.task_id);
-        // Mark the task as completed
-        document.getElementById('task-title-' + data.task_id).classList.add('has-text-grey-light', 'is-striked');
-        let completeButton = document.getElementById('complete-button-' + data.task_id);
-        completeButton.innerHTML = '<i class="fas fa-undo"></i>';
-        completeButton.classList.replace('is-success', 'is-warning');
-    } else if (data.action === 'undone') {
-        console.log("Task marked as undone:", data.task_id);
-        // Undo the completion of the task
-        document.getElementById('task-title-' + data.task_id).classList.remove('has-text-grey-light', 'is-striked');
-        let completeButton = document.getElementById('complete-button-' + data.task_id);
-        completeButton.innerHTML = '<i class="fas fa-check"></i>';
-        completeButton.classList.replace('is-warning', 'is-success');
-    } else if (data.action === 'deleted') {
-        console.log("Task deleted:", data.task_id);
-        // Remove the task from the task list
-        const taskElement = document.getElementById('task-' + data.task_id);
-        if (taskElement) {
-            taskElement.remove();
-        }
-    }
-};
-
-taskSocket.onclose = function(e) {
-    console.error('Task socket closed unexpectedly');
-};
-
-
-
-    var taskTimeouts = {};
-    function completeTask(taskId) {
-        console.log('Complete Task clicked for taskId:', taskId);
-    
-        let countdown = 5; // Move the countdown initialization here, before fetch
-    
-        // Immediately add strikethrough and change button
-        document.getElementById('task-title-' + taskId).classList.add('has-text-grey-light', 'is-striked');
-        let completeButton = document.getElementById('complete-button-' + taskId);
-        completeButton.innerHTML = '<i class="fas fa-undo"></i>';
-        completeButton.classList.replace('is-success', 'is-warning');
-        completeButton.setAttribute('onclick', `undoCompleteTask(${taskId}); return false;`);
-    
-        // AJAX POST request to the complete_task view
-        fetch(`/complete_task/${taskId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ countdown: countdown }) // Now countdown is defined before this line
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Task completion response:', data);
-    
-            // Start the countdown after getting a successful response
-            const countdownInterval = setInterval(function() {
-                console.log('Countdown:', countdown);
-                countdown--;
-    
-                if (countdown < 0) {
-                    clearInterval(countdownInterval);
-                    deleteTask(taskId);
-                }
-            }, 1000); // Log every 1 second (1000 milliseconds)
-        })
-        .catch(error => console.error('Error:', error));
-    }
-    
-
-
-function undoCompleteTask(taskId) {
-    console.log('Undo Complete Task clicked for taskId:', taskId);
-    // Clear the timer to stop the task deletion
-    clearTimeout(taskTimeouts[taskId]);
-    delete taskTimeouts[taskId];
-
-    // AJAX POST request to the undo_complete_task view
-    fetch(`/undo_complete_task/${taskId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Task undo completion response:', data);
-        // Remove strikethrough and change button back after successful response
-        document.getElementById('task-title-' + taskId).classList.remove('has-text-grey-light', 'is-striked');
-        let completeButton = document.getElementById('complete-button-' + taskId);
-        completeButton.innerHTML = '<i class="fas fa-check"></i>';
-        completeButton.classList.replace('is-warning', 'is-success');
-        completeButton.setAttribute('onclick', `completeTask(${taskId}); return false;`);
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-
-function deleteTask(taskId, categoryId) {
-    fetch(`/delete_task/${taskId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === 'success') {
-            var taskElement = document.getElementById('task-' + taskId);
-            taskElement.classList.add('fade-out');
-            taskElement.addEventListener('animationend', function() {
-                taskElement.remove();
-            });
-
-            // Check if the category is now empty
-            fetch(`/get_tasks/${categoryId}/`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.tasks.length === 0) {
-                    // Remove the category from the list
-                    var categoryElement = document.getElementById('category-' + categoryId);
-                    categoryElement.remove();
-                }
-            });
-        }
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
-}
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-</script>
+<script src="{% static 'js/task-list.js' %}"></script>
 
 
 <style>

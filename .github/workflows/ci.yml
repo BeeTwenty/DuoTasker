@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ["main", "master"]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: duotasker
+          POSTGRES_USER: duotasker
+          POSTGRES_PASSWORD: duotasker
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U duotasker"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    env:
+      SECRET_KEY: ci-secret-key
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      CSRF_TRUSTED_ORIGINS: http://localhost
+      TIME_ZONE: UTC
+      DB_NAME: duotasker
+      DB_USER: duotasker
+      DB_PASSWORD: duotasker
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff black isort mypy pytest pytest-django pre-commit daphne
+
+      - name: Pre-commit
+        run: pre-commit run --all-files
+
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Type check
+        run: mypy .
+
+      - name: Tests (legacy baseline)
+        run: python manage.py test --settings=DuoTasker.test_settings
+
+      - name: Tests (v2 baseline)
+        run: pytest

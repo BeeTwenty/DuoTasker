@@ -28,13 +28,10 @@ Set up and run DuoTasker on your local machine or production environment using D
   ```env
  # Django settings
 SECRET_KEY=VERY_SECRET_KEY
-DEBUG=True
-ALLOWED_HOSTS=
-CSRF_TRUSTED_ORIGINS=
+  DEBUG=False
+  ALLOWED_HOSTS=localhost,127.0.0.1
+  CSRF_TRUSTED_ORIGINS=http://localhost,http://127.0.0.1
 TIME_ZONE=UTC
-
-# Nginx settings
-SERVER_NAME=localhost
 
 # SuperUser settings
 DJANGO_SUPERUSER_USERNAME=admin
@@ -47,6 +44,10 @@ DB_USER=duotasker
 DB_PASSWORD=duotasker
 DB_HOST=postgres
 DB_PORT=5432
+
+# Redis
+REDIS_HOST=redis
+REDIS_PORT=6379
   ```
      
 
@@ -54,56 +55,61 @@ DB_PORT=5432
    
   ```yml
   services:
-  duotasker:
-    image: beetwenty/duotasker:latest
-    restart: always
-    volumes:
-      - /path/to/static/:/app/staticfiles/
-    depends_on:
-      - redis
-      - postgres
-    networks:
-      - app-network
-
-  nginx:
-    image: nginx:alpine
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /path/to/nginx.conf:/etc/nginx/nginx.conf
-      - /path/to/static:/app/staticfiles/
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
     environment:
-      - SERVER_NAME=${SERVER_NAME}
-    depends_on:
-      - duotasker
-    networks:
-      - app-network
+      POSTGRES_USER: ${DB_USER:-duotasker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-duotasker}
+      POSTGRES_DB: ${DB_NAME:-duotasker}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-duotasker} -d ${DB_NAME:-duotasker}"]
 
   redis:
-    image: "redis:alpine"
-    networks:
-      - app-network
-
-  postgres:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - /path/to/postgresql:/var/lib/postgresql/data/
-    networks:
-      - app-network
+      - redis_data:/data
+
+  duotasker:
+    build:
+      context: .
+    image: beetwenty/duotasker:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - static_data:/app/staticfiles
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_data:/app/staticfiles:ro
+    depends_on:
+      duotasker:
+        condition: service_healthy
 
 volumes:
-  static_volume:
-
-networks:
-  app-network:
-    driver: bridge
+  postgres_data:
+  redis_data:
+  static_data:
   
   ```
 
@@ -114,7 +120,8 @@ networks:
 </div>
 
 ```
-docker compose up -d
+cp .env.example .env
+docker compose up -d --build
 ```
 
    <div align="center">

@@ -15,6 +15,10 @@ class Category(models.Model):
     
     class Meta:
         ordering = ['-is_important', 'name']
+        indexes = [
+            models.Index(fields=['is_important', 'name']),
+            models.Index(fields=['is_uncategorized']),
+        ]
     
 
 
@@ -27,4 +31,11 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['completed']),
+            models.Index(fields=['category']),
+            models.Index(fields=['title']),
+        ]
     

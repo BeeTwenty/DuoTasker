@@ -1,51 +1,76 @@
 services:
-  duotasker:
-    image: beetwenty/duotasker:latest
-    restart: always
-    volumes:
-      - /path/to/static/:/app/staticfiles/
-    depends_on:
-      - redis
-      - postgres
-    networks:
-      - app-network
-
-  nginx:
-    image: nginx:alpine
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /path/to/nginx.conf:/etc/nginx/nginx.conf
-      - /path/to/static:/app/staticfiles/
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
     environment:
-      - SERVER_NAME=${SERVER_NAME}
-    depends_on:
-      - duotasker
-    networks:
-      - app-network
+      POSTGRES_USER: ${DB_USER:-duotasker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-duotasker}
+      POSTGRES_DB: ${DB_NAME:-duotasker}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-duotasker} -d ${DB_NAME:-duotasker}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   redis:
-    image: "redis:alpine"
-    networks:
-      - app-network
-
-  postgres:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - /path/to/postgresql:/var/lib/postgresql/data/
-    networks:
-      - app-network
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  duotasker:
+    build:
+      context: .
+    image: beetwenty/duotasker:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - static_data:/app/staticfiles
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.create_connection(('127.0.0.1', 8000), 2); s.close()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_data:/app/staticfiles:ro
+    depends_on:
+      duotasker:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  static_volume:
-
-networks:
-  app-network:
-    driver: bridge
+  postgres_data:
+  redis_data:
+  static_data:
